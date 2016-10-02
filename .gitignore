@@ -90,3 +90,16 @@ ENV/
 
 #vscode
 .vscode/
+
+#unity
+unityfiles/Library/
+unityfiles/Temp/
+unityfiles//[Oo]bj/
+unityfiles/build/
+unityfiles/ExportedObj/
+.consulo/
+*.suo
+*.tmp
+*.user
+*.pidb
+*.svd

@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{23EEEB43-47BD-D26B-FC6B-7EE9A3B755DD}") = "python", "Assembly-CSharp.csproj", "{F23F3EC7-48E3-2F9D-2FD4-13659E097509}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F23F3EC7-48E3-2F9D-2FD4-13659E097509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F23F3EC7-48E3-2F9D-2FD4-13659E097509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F23F3EC7-48E3-2F9D-2FD4-13659E097509}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F23F3EC7-48E3-2F9D-2FD4-13659E097509}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
