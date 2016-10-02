@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class SpikeTrap : MonoBehaviour {
 	public Transform spike;

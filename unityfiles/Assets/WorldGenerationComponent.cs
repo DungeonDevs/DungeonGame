@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class generateTilesScript : MonoBehaviour
+public class WorldGenerationComponent : MonoBehaviour
 {
 
     public GameObject Wall;
@@ -20,6 +20,9 @@ public class generateTilesScript : MonoBehaviour
         array2D[3][7] = 1;
         array2D[3][8] = 1;
         generateTiles(array2D);
+    }
+    public void updateMap(string map) {
+        Debug.Log(map);
     }
     public void generateTiles(int[][] list)
     {
