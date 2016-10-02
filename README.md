@@ -1,2 +1,2 @@
 # DungeonGame
-@authors: Maximilian Lohmann, Tom Blöcker, Jannis Jorré, Nicolas von Lützow
+Authors: Maximilian Lohmann, Tom BlÃ¶cker, Jannis JorrÃ©, Nicolas von LÃ¼tzow
