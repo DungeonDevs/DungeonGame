@@ -6,7 +6,7 @@ def MTL(filename):
     mtl = None
     for line in open(filename, "r"):
         if line.startswith('#'): continue
-        values = line.split()
+        values = line.split(" ")
         if not values: continue
         if values[0] == 'newmtl':
             mtl = contents[values[1]] = {}
