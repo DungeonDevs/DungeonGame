@@ -16,6 +16,7 @@ public class test : MonoBehaviour
     }
     public void updateMap(SocketIOEvent e)
     {
+        Debug.Log("got Socket");
         generator.updateMap(string.Format("{0}", e.data));
     }
 
