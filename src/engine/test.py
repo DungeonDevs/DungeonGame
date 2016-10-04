@@ -16,7 +16,7 @@ while(wait):
 print("ending now")
 '''
 
-from engine import key, Input
+from input import key, Input
 
 InputManager = Input()
 if(InputManager.getInput() == key.left):
