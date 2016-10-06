@@ -1,5 +1,5 @@
 # DungeonGame
-Authors: Maximilian Lohmann, Tom Blöcker, Jannis Jorré, Nicolas von Lützow
+Authors: Maximilian Lohmann, Tom Bloecker, Jannis Jorre, Nicolas von Luetzow
 
 Original attributes:
 - courage
