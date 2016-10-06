@@ -18,13 +18,14 @@ public class cameraComponent : MonoBehaviour
     {
         if (playerGameobject == null) return;
         if (playerComp == null) playerComp = playerGameobject.GetComponent<playerComponent>();
-        transform.parent = playerComp.transform;
+        transform.SetParent(playerComp.transform);
         transform.LookAt(playerComp.transform);
         transform.localPosition = new Vector3(0, offsetY, offsetZ);
     }
-    public void restore() {
-		transform.parent = null;
+    public void restore()
+    {
+        print("restore");
+        transform.parent = null;
         playerGameobject = null;
-        playerGameobject = null;
-	}
+    }
 }

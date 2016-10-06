@@ -12,6 +12,7 @@ public class WorldGenerationComponent : MonoBehaviour
     public int[][] sa;
     public GameObject tileParent;
     public GameObject overlayParent;
+    public GameObject cam;
     // Update is called once per frame
     void Update()
     {
@@ -23,6 +24,8 @@ public class WorldGenerationComponent : MonoBehaviour
         tileParent = GameObject.Find("tileParent");
         overlayParent = GameObject.Find("overlayParent");
         oL = this.GetComponent<ObjectLoader>();
+        cam = Camera.main.gameObject;
+        /*
         tileMap = new int[5][] { new int[10], new int[10], new int[10], new int[10], new int[10] };
         tileMap[1][5] = 1;
         tileMap[1][6] = 1;
@@ -36,10 +39,15 @@ public class WorldGenerationComponent : MonoBehaviour
         overlay = new int[5][] { new int[10], new int[10], new int[10], new int[10], new int[10] };
         overlay[2][6] = 1;
         generateOverlay(overlay);
+        */
     }
-    public void updateMap(string map)
+    public void render(informationClass data)
     {
-        Debug.Log(map);
+        cleanOverlay();
+        cleanTiles();
+        playerRotation = data.playerRoatation;
+        generateTiles(data.tiles);
+        generateOverlay(data.overlay);
     }
     public void generateTiles(int[][] list)
     {
@@ -104,13 +112,14 @@ public class WorldGenerationComponent : MonoBehaviour
     }
     public void cleanOverlay()
     {
-        Camera.main.GetComponent<cameraComponent>().restore();
+        //TODO: Deatach Camera
+        print("cleaning");
         foreach (Transform child in overlayParent.transform)
         {
             Destroy(child.gameObject);
         }
     }
-        public void cleanTiles()
+    public void cleanTiles()
     {
         foreach (Transform child in tileParent.transform)
         {
