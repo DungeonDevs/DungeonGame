@@ -54,6 +54,7 @@
      <Compile Include="Assets\cameraComponent.cs" />
      <Compile Include="Assets\informationClass.cs" />
      <Compile Include="Assets\interfaceComponent.cs" />
+     <Compile Include="Assets\parentComponent.cs" />
      <Compile Include="Assets\playerComponent.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

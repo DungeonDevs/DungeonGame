@@ -57,7 +57,7 @@ public class WorldGenerationComponent : MonoBehaviour
         {
             foreach (int z in x)
             {
-                Debug.Log(z);
+                Debug.Log(xCo +" "+ zCo +":" + z);
                 GameObject go = Instantiate(getTile(z), new Vector3(xCo, 0, zCo), Quaternion.identity) as GameObject;
                 go.transform.parent = tileParent.transform;
                 zCo = zCo + 1;
@@ -112,8 +112,7 @@ public class WorldGenerationComponent : MonoBehaviour
     }
     public void cleanOverlay()
     {
-        //TODO: Deatach Camera
-        print("cleaning");
+        Camera.main.GetComponent<cameraComponent>().restore();
         foreach (Transform child in overlayParent.transform)
         {
             Destroy(child.gameObject);

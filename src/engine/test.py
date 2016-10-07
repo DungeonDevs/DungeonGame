@@ -6,7 +6,8 @@ from engine import *
 import time
 
 ngn = engine()
-t1 = time.time()
-ngn.render([[ 0 for _ in range(5)] for _ in range(5)])
-t2 = time.time()
-print(t2 - t1)
+print("initialised")
+ngn.render([[ 0 for _ in range(5)] for _ in range(5)],[[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,1,0,0],[0,0,0,0,0]],0)
+print("rendered")
+time.sleep(2)
+ngn.render([[ 0 for _ in range(5)] for _ in range(5)],[[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,1,0,0]],0)

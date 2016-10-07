@@ -11,6 +11,9 @@ public class interfaceComponent : MonoBehaviour
     void Start()
     {
         worldGen = GameObject.FindObjectOfType<WorldGenerationComponent>();
+        StreamWriter sr = new StreamWriter("../src/engine/unityPy.txt");
+        sr.Write("ready");
+        sr.Close();
     }
 
     // Update is called once per frame
