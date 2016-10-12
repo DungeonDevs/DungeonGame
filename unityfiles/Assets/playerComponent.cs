@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-
 public class playerComponent : MonoBehaviour {
     public int roatation;
     public void __init__(int roatation) {

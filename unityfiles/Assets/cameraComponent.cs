@@ -3,16 +3,12 @@ using System.Collections;
 
 public class cameraComponent : MonoBehaviour
 {
-
     public GameObject playerGameobject;
     public playerComponent playerComp;
     public float offsetZ;
     public float offsetY;
     // Use this for initialization
-    void Start()
-    {
-    }
-
+    void Start(){}
     // Update is called once per frame
     void Update()
     {

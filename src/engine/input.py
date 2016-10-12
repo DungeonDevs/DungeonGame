@@ -18,13 +18,13 @@ class Input():
         self.input = x
 
 #an Enum with all inputkeys which shall call the self.callback function
-class key(Enum):
+class Key(Enum):
         left = 0
         right = 1
         up = 2
         down = 3
 #loccally used class - DO NOT USE!
-class hookWrapper():
+class HookWrapper():
     '''
     @param callback: the callback to be called with the pressed key from of the keyEnum.
     @param startNow: says whether the input should start immediately

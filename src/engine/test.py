@@ -5,7 +5,7 @@
 from engine import *
 import time
 
-ngn = engine()
+ngn = Engine()
 print("initialised")
 ngn.render([[ 0 for _ in range(5)] for _ in range(5)],[[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,1,0,0],[0,0,0,0,0]],0)
 print("rendered")

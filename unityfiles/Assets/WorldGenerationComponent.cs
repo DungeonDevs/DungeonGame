@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 public class WorldGenerationComponent : MonoBehaviour
 {
-
     public ObjectLoader oL;
     public int playerRotation;
     public int[][] tileMap;
@@ -13,33 +12,12 @@ public class WorldGenerationComponent : MonoBehaviour
     public GameObject tileParent;
     public GameObject overlayParent;
     public GameObject cam;
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-    // Use this for initialization
     void Start()
     {
         tileParent = GameObject.Find("tileParent");
         overlayParent = GameObject.Find("overlayParent");
         oL = this.GetComponent<ObjectLoader>();
         cam = Camera.main.gameObject;
-        /*
-        tileMap = new int[5][] { new int[10], new int[10], new int[10], new int[10], new int[10] };
-        tileMap[1][5] = 1;
-        tileMap[1][6] = 1;
-        tileMap[1][7] = 1;
-        tileMap[1][8] = 1;
-        tileMap[3][5] = 1;
-        tileMap[3][6] = 1;
-        tileMap[3][7] = 1;
-        tileMap[3][8] = 1;
-        generateTiles(tileMap);
-        overlay = new int[5][] { new int[10], new int[10], new int[10], new int[10], new int[10] };
-        overlay[2][6] = 1;
-        generateOverlay(overlay);
-        */
     }
     public void render(informationClass data)
     {
@@ -60,10 +38,10 @@ public class WorldGenerationComponent : MonoBehaviour
                 Debug.Log(xCo +" "+ zCo +":" + z);
                 GameObject go = Instantiate(getTile(z), new Vector3(xCo, 0, zCo), Quaternion.identity) as GameObject;
                 go.transform.parent = tileParent.transform;
-                zCo = zCo + 1;
+                zCo++;
             }
             zCo = 0;
-            xCo = xCo + 1;
+            xCo++;
         }
     }
     public void generateOverlay(int[][] list)
@@ -79,14 +57,12 @@ public class WorldGenerationComponent : MonoBehaviour
                     GameObject go = Instantiate(getOverlay(z), new Vector3(xCo, 1, zCo), Quaternion.identity) as GameObject;
                     go.transform.parent = overlayParent.transform;
                     if (go.GetComponent<playerComponent>() != null)
-                    {
                         go.GetComponent<playerComponent>().__init__(playerRotation);
-                    }
                 }
-                zCo = zCo + 1;
+                zCo++;
             }
             zCo = 0;
-            xCo = xCo + 1;
+            xCo++;
         }
     }
     public GameObject getTile(int type)
@@ -108,7 +84,6 @@ public class WorldGenerationComponent : MonoBehaviour
                 return oL.player;
         }
         return null;
-
     }
     public void cleanOverlay()
     {
@@ -118,8 +93,7 @@ public class WorldGenerationComponent : MonoBehaviour
             Destroy(child.gameObject);
         }
     }
-    public void cleanTiles()
-    {
+    public void cleanTiles(){
         foreach (Transform child in tileParent.transform)
         {
             Destroy(child.gameObject);

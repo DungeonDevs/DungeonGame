@@ -1,6 +1,6 @@
 import json
 #pseudocode
-class engine():
+class Engine():
     def __init__(self):
         self.outputFile ="pyUnity.json"
         self.open()
@@ -16,9 +16,9 @@ class engine():
                     mapTiles[xCo][yCo] = 1 # wall
                 else:
                     mapTiles[xCo][yCo] = 0 # ground
-                yCo = yCo + 1      
+                yCo = yCo + 1
             xCo = xCo + 1
-        #prepareOverlay    
+        #prepareOverlay
         xCo = 0
         yCo = 0
         for _ in overlayTiles:
@@ -27,9 +27,9 @@ class engine():
                     overlayTiles[xCo][yCo] = 0
                 else:
                     overlayTiles[xCo][yCo] = dictionary.get(tile.item) # pseudocode
-                yCo = yCo + 1      
+                yCo = yCo + 1
             xCo = xCo + 1
-        
+
         file = open(self.outputFile, "w")
         x = json.dumps({"tiles": tiles, "overlay": overlayTiles, "playerRoataion": rotation, "playerStats": None},indent=4)
         file.write(x)

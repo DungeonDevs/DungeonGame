@@ -4,8 +4,6 @@ using System.IO;
 using Newtonsoft.Json;
 public class interfaceComponent : MonoBehaviour
 {
-
-    // Use this for initialization
     public WorldGenerationComponent worldGen;
     private string old;
     void Start()
@@ -15,17 +13,12 @@ public class interfaceComponent : MonoBehaviour
         sr.Write("ready");
         sr.Close();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        try
-        {
+    void Update(){
+        try{
             using (StreamReader sr = new StreamReader("../src/engine/pyUnity.json"))
             {
                 string content = sr.ReadToEnd();
-                if (content == old)
-                    return;
+                if (content == old) return;
                 print(content);
                 if (content == "close")
                 {
@@ -39,18 +32,11 @@ public class interfaceComponent : MonoBehaviour
                 {
                     print("rendering");
                     worldGen.render(JsonConvert.DeserializeObject<informationClass>(content));
-
                 }
                 old = content;
             }
         }
-        catch (Exception e)
-        {
-            Debug.LogError("The file could not be read.");
-        }
+        catch (Exception e){Debug.LogError("The file could not be read.");}
     }
-    void showLoadingScreen()
-    {
-
-    }
+    void showLoadingScreen(){}
 }
