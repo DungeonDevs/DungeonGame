@@ -1,10 +1,21 @@
 class Tile(object):
-    def __init__(self, item, isSolid):
-        self.item = item
+    def __init__(self, isSolid):
         self.isSolid = isSolid
         
 class Ground(Tile):
-    pass
+    def __init__(self, item):
+        Tile.__init__(self, False)
+        self.item = item
 
+    def setItem(self, item):
+        self.item = item
+        
+    def getTile(self):
+        return "Ground"
+    
 class Wall(Tile):
-    pass
+    def __init__(self):
+        Tile.__init__(self, True)
+    
+    def getTile(self):
+        return "Wall"
