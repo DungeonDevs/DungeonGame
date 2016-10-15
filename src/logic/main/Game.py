@@ -26,7 +26,10 @@ class Game(object):
     #mobs += [Monster(2,6,0,5,21)]
     running = True
 
-    def __init__(self):
+    def __init__(self, hero = None):
+        # if hero is presented the player is set to hero
+        if(not (hero is None)):
+            player = hero
         self.mapHandler.createBorders(self.gameMap, 10,10)
         while self.running:
             self.tick()
