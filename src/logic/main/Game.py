@@ -2,7 +2,7 @@ from src.logic.main.Map import MapHandler
 from src.logic.main.Entity import Player, Monster
 
 from src.logic.main.Engine import Engine, InputHandler
-from src.logic.main.Item import NoItem, Sword
+from src.logic.main.Item import NoItem, Sword, Teleport
 #from src.logic.main.Tile import Wall
 #from src.logic.main.Item import SolidItem
 
@@ -15,6 +15,8 @@ class Game(object):
     mapHandler = MapHandler()
     gameMap = mapHandler.createMap(10, 10)
     gameMap[8][8].setItem(Sword())
+    gameMap[1][2].setItem(Teleport())
+    levelID = 0 # stores which level is played right now
     #gameMap[2][2] = Wall()
     #gameMap[2][4].setItem(SolidItem())
     player = Player(1,1,1,10,30, None)
@@ -75,12 +77,15 @@ class Game(object):
                     print("You lost!")
                     self.running = False
                 else:
+                    #TODO: heal the player self.player.heal()
                     dead += [a]
 
         for a in range(len(dead)):
             self.mobs.pop(dead[a])
 
     def itemAction(self):
+        if isinstance(self.gameMap[self.player.info[0]][self.player.info[1]].item, Teleport):
+            pass #TODO call teleport here
         if self.gameMap[self.player.info[0]][self.player.info[1]].item != NoItem():
             self.player.info[3] += self.gameMap[self.player.info[0]][self.player.info[1]].item.attackUp
             self.player.info[4] += self.gameMap[self.player.info[0]][self.player.info[1]].item.healthUp

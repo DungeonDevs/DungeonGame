@@ -18,7 +18,7 @@ class MapHandler(object):
     @staticmethod
     def saveMap(levelID, gameMap, playerPosition, mobs, levelType=0):
         levelFile = open(str(levelID) + '.json')
-        json.dump({"levelID": levelID,"gameMap":gameMap, "playerPosition": playerPosition, "mobs": mobs, "levelType": levelType}},levelFile)
+        json.dump({"levelID": levelID,"gameMap":gameMap, "playerPosition": playerPosition, "mobs": mobs, "levelType": levelType}, levelFile)
 
     def setTile(self, gameMap, xPos, yPos, Tile):
         gameMap[xPos][yPos] = Tile

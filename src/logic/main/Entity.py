@@ -36,7 +36,9 @@ class Player(Entity):
     def __init__(self, xPos, yPos, orientation, attack, health, playerClass):
         Entity.__init__(self, xPos, yPos, orientation, attack, health)
         self.info[5] = playerClass
-
+    #override in subclasses
+    def heal():
+        pass
 #TODO: make their movement more interesting/intelligent/less random
 #basic opponent
 class Monster(Entity):
