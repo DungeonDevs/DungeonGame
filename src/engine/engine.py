@@ -4,15 +4,16 @@ class Engine():
     def __init__(self):
         self.outputFile ="pyUnity.json"
         self.open()
-    def render(self, tiles, dictionary = None, rotation = 0):
+    def render(self, tiles, playerInfo, mobs):
         print("render")
         mapTiles = tiles
         overlayTiles = tiles
+        #prepare MapS
         xCo = 0
         yCo = 0
         for _ in mapTiles:
             for tile in _:
-                if( tile.begehbar is False ): # pseudocode
+                if( tile.getIsSolid() is False ): # pseudocode
                     mapTiles[xCo][yCo] = 1 # wall
                 else:
                     mapTiles[xCo][yCo] = 0 # ground
@@ -23,15 +24,13 @@ class Engine():
         yCo = 0
         for _ in overlayTiles:
             for tile in _:
-                if( tile.item == None ): # pseudocode
-                    overlayTiles[xCo][yCo] = 0
-                else:
-                    overlayTiles[xCo][yCo] = dictionary.get(tile.item) # pseudocode
+                    overlayTiles[xCo][yCo] = tile.item.ID
                 yCo = yCo + 1
             xCo = xCo + 1
-
+        #write File
         file = open(self.outputFile, "w")
-        x = json.dumps({"tiles": tiles, "overlay": overlayTiles, "playerRoataion": rotation, "playerStats": None},indent=4)
+        #TODO: Remove the indent for builds
+        x = json.dumps({"tiles": tiles, "overlay": overlayTiles, "playerStats": playerInfo, "mobs": mobs },indent=4)
         file.write(x)
         file.close()
     def close(self):

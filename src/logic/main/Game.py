@@ -9,7 +9,7 @@ from src.logic.main.Item import NoItem, Sword
 #TODO: clean this up, remove test-code
 #main class, contains main-loop
 class Game(object):
-    
+
     engine = Engine()
     inputHandler = InputHandler()
     mapHandler = MapHandler()
@@ -23,22 +23,22 @@ class Game(object):
     #mobs += [Monster(4,4,0,5,21)]
     #mobs += [Monster(2,6,0,5,21)]
     running = True
-        
+
     def __init__(self):
         self.mapHandler.createBorders(self.gameMap, 10,10)
         while self.running:
             self.tick()
-            
+
     def tick(self):
         self.display()
         self.playerMove()
         self.mobMove()
         self.fight()
         self.itemAction()
-                   
+
     def display(self):
         self.engine.display(self.gameMap, self.player.info, self.mobs)
-        
+
     def playerMove(self):
         inputKey = self.inputHandler.getInput()
         if inputKey == "w":
@@ -59,13 +59,13 @@ class Game(object):
                 self.player.move(0)
         elif inputKey == "stop":
             self.running = False
-            
+
     def mobMove(self):
         for a in range(len(self.mobs)):
             self.mobs[a].move(0, True)
             if self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].getIsSolid() or self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].item.isSolid:
                 self.mobs[a].move(1, False)
-            
+
     def fight(self):
         dead = []
         for a in range(len(self.mobs)):
@@ -76,10 +76,10 @@ class Game(object):
                     self.running = False
                 else:
                     dead += [a]
-        
+
         for a in range(len(dead)):
             self.mobs.pop(dead[a])
-            
+
     def itemAction(self):
         if self.gameMap[self.player.info[0]][self.player.info[1]].item != NoItem():
             self.player.info[3] += self.gameMap[self.player.info[0]][self.player.info[1]].item.attackUp
