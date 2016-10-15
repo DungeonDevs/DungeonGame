@@ -1,5 +1,5 @@
 '''
-superItem
+superclasses
 '''
 #superclass contains shared variables
 class Item():
@@ -9,7 +9,9 @@ class Item():
         self.isSolid = isSolid
         self.healthUp = healthUp
         self.attackUp = attackUp
-
+class Interactable():
+    def interact(hero, gameMap):
+        pass
 '''
 MetaItems
 '''

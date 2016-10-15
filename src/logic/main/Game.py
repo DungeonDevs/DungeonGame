@@ -2,7 +2,7 @@ from src.logic.main.Map import MapHandler
 from src.logic.main.Entity import Player, Monster
 
 from src.logic.main.Engine import Engine, InputHandler
-from src.logic.main.Item import NoItem, Sword, LevelEnd
+from src.logic.main.Item import NoItem, Sword, LevelEnd, Interactable
 #from src.logic.main.Tile import Wall
 #from src.logic.main.Item import SolidItem
 
@@ -94,14 +94,17 @@ class Game(object):
 
     def itemAction(self):
         item = self.gameMap[self.player.info[0]][self.player.info[1]].item
-        if isinstance(item, LevelEnd):
-            item.trigger(self.loadNextLevel) # handing over a callback so diverent LevelEnd-items can behave in different ways
-            return
 
         if item != NoItem():
             self.player.info[3] += item.attackUp
             self.player.info[4] += item.healthUp
             self.gameMap[self.player.info[0]][self.player.info[1]].setItem(NoItem())
+
+        if isinstance(item, LevelEnd):
+            item.trigger(self.loadNextLevel) # handing over a callback so diverent LevelEnd-items can behave in different ways
+
+        if isinstance(item, Interactable):
+            item.interact(self.player, self.gameMap, self.mobs)
 
     def checkHealth(self):
         if self.player.info[4] <= 0:
