@@ -14,20 +14,20 @@ class Entity(object):
         if direction == 0:
             if self.info[2] == 0:
                 self.info[1] -= 1
-            if self.info[2] == 1:
+            elif self.info[2] == 1:
                 self.info[0] += 1
-            if self.info[2] == 2:
+            elif self.info[2] == 2:
                 self.info[1] += 1
-            if self.info[2] == 3:
+            elif self.info[2] == 3:
                 self.info[0] -= 1
         elif direction == 1:
             if self.info[2] == 0:
                 self.info[1] += 1
-            if self.info[2] == 1:
+            elif self.info[2] == 1:
                 self.info[0] -= 1
-            if self.info[2] == 2:
+            elif self.info[2] == 2:
                 self.info[1] -= 1
-            if self.info[2] == 3:
+            elif self.info[2] == 3:
                 self.info[0] += 1
 
 #TODO: implement different playerClasses
