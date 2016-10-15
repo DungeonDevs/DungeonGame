@@ -2,7 +2,7 @@
 
 # material
 mtllib charakter1.mtl
-usemtl palette
+usemtl charakter1
 
 # normals
 vn -1 0 0
