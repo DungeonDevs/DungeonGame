@@ -2,7 +2,8 @@ from src.logic.main.Map import MapHandler
 from src.logic.main.Entity import Player, Monster
 
 from src.logic.main.Engine import Engine, InputHandler
-from src.logic.main.Item import NoItem, Sword, LevelEnd, Interactable
+from src.logic.main.Item import NoItem, LevelEnd, Interactable
+from src.logic.main.Items import Leather, Sword
 #from src.logic.main.Tile import Wall
 #from src.logic.main.Item import SolidItem
 
@@ -14,7 +15,7 @@ class Game(object):
     inputHandler = InputHandler()
     mapHandler = MapHandler()
     gameMap = mapHandler.createMap(10, 10)
-    gameMap[8][8].setItem(Sword())
+    gameMap[8][8].setItem(Leather())
     gameMap[1][2].setItem(LevelEnd())
     levelID = 0 # stores which level is played right now
     #gameMap[2][2] = Wall()
@@ -86,7 +87,7 @@ class Game(object):
             if self.mobs[a].info[0] == self.player.info[0] and self.mobs[a].info[1] == self.player.info[1]:
                 self.player.info[4] -= (self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]
                 if (not self.player.info[4] <= 0):
-                    #TODO: heal the player self.player.heal()
+                    #TODO: heal the player self.player.heal() (already implemented)
                     dead += [a]
 
         for a in range(len(dead)):

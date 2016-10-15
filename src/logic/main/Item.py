@@ -9,9 +9,11 @@ class Item():
         self.isSolid = isSolid
         self.healthUp = healthUp
         self.attackUp = attackUp
+
+#base class for all items that shall interact with the gameMap and not with the player stats
 class Interactable():
-    def interact(hero, gameMap):
-        pass
+    def interact(self, player, gameMap, mobs):
+        print("Interaction triggered! Override for use!")
 '''
 MetaItems
 '''
@@ -33,11 +35,3 @@ class LevelEnd(Item) :
     #call the callback with a specific levelId
     def trigger(self, callback):
         print("LevelEnd triggered! Override for use!")
-        pass
-'''
-CollectableItems
-'''
-#first real item, increases attack by 10
-class Sword(Item):
-    def __init__(self):
-        Item.__init__(self, 2, 0, False, 0, 10)
