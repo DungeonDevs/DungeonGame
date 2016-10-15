@@ -17,10 +17,15 @@ class SolidItem(Item):
     def __init__(self):
         Item.__init__(self, 1, 0, True, 0, 0)
 
-#base item for all items that shall call a teleport
-class Teleport(Item) :
+#base item for all items that shall end a level (or call another level)
+class LevelEnd(Item) :
     def __init__(self):
          Item.__init__(self, 100, 0, False, 0, 0)
+
+    #call the callback with a specific levelId
+    def trigger(self, callback):
+        print("LevelEnd triggered! Override for use!")
+        pass
 
 #first real item, increases attack by 10
 class Sword(Item):

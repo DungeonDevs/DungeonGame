@@ -2,7 +2,7 @@ from src.logic.main.Map import MapHandler
 from src.logic.main.Entity import Player, Monster
 
 from src.logic.main.Engine import Engine, InputHandler
-from src.logic.main.Item import NoItem, Sword, Teleport
+from src.logic.main.Item import NoItem, Sword, LevelEnd
 #from src.logic.main.Tile import Wall
 #from src.logic.main.Item import SolidItem
 
@@ -15,7 +15,7 @@ class Game(object):
     mapHandler = MapHandler()
     gameMap = mapHandler.createMap(10, 10)
     gameMap[8][8].setItem(Sword())
-    gameMap[1][2].setItem(Teleport())
+    gameMap[1][2].setItem(LevelEnd())
     levelID = 0 # stores which level is played right now
     #gameMap[2][2] = Wall()
     #gameMap[2][4].setItem(SolidItem())
@@ -25,14 +25,20 @@ class Game(object):
     #mobs += [Monster(4,4,0,5,21)]
     #mobs += [Monster(2,6,0,5,21)]
     running = True
-
-    def __init__(self, hero = None):
+    gameWon = None
+    '''
+    @param: hero - the hero to use
+    @param: callback - a callback that s called when the game ends. True is handed over if the player won
+    '''
+    def __init__(self, hero = None, callback = None):
         # if hero is presented the player is set to hero
         if(not (hero is None)):
             player = hero
         self.mapHandler.createBorders(self.gameMap, 10,10)
         while self.running:
             self.tick()
+        if(callback):
+            callback(gameWon)
 
     def tick(self):
         self.display()
@@ -77,6 +83,7 @@ class Game(object):
             if self.mobs[a].info[0] == self.player.info[0] and self.mobs[a].info[1] == self.player.info[1]:
                 self.player.info[4] -= (self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]
                 if self.player.info[4] <= 0:
+                    self.gameWon = False
                     print("You lost!")
                     self.running = False
                 else:
@@ -87,9 +94,24 @@ class Game(object):
             self.mobs.pop(dead[a])
 
     def itemAction(self):
-        if isinstance(self.gameMap[self.player.info[0]][self.player.info[1]].item, Teleport):
-            pass #TODO call teleport here
-        if self.gameMap[self.player.info[0]][self.player.info[1]].item != NoItem():
-            self.player.info[3] += self.gameMap[self.player.info[0]][self.player.info[1]].item.attackUp
-            self.player.info[4] += self.gameMap[self.player.info[0]][self.player.info[1]].item.healthUp
+        item = self.gameMap[self.player.info[0]][self.player.info[1]].item
+        if isinstance(item, LevelEnd):
+            item.trigger(self.loadNextLevel) # handing over a callback so diverent LevelEnd-items can behave in different ways
+            return
+
+        if item != NoItem():
+            self.player.info[3] += item.attackUp
+            self.player.info[4] += item.healthUp
             self.gameMap[self.player.info[0]][self.player.info[1]].setItem(NoItem())
+
+    def loadNextLevel(self, levelToLoad = None, EndGame = False):
+        if(EndGame):
+            self.gameWon = True
+
+        if(not levelToLoad is None): # if a levelToLoad is hand over load this level
+             self.levelID = levelToLoad
+        else: # else load the level with the next id
+            self.levelID = self.levelID + 1
+
+        self.gameMap, self.mobs, self.player.info[0], self.player.info[1] = MapHandler.loadMap(levelID)
+        self.mapHandler.createBorders(self.gameMap, len(self.gameMap),len(self.gameMap[0]))

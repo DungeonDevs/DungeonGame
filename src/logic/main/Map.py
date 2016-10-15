@@ -13,7 +13,7 @@ class MapHandler(object):
         gameMap = data["map"] # a gameMap
         mobs = data ["mobs"] # a list of mob infos
         playerPosition = data["playerPosition"] #for example [12,7]
-        return gameMap, mobs, playerPosition
+        return gameMap, mobs, playerPosition[0], playerPosition[1]
 
     @staticmethod
     def saveMap(levelID, gameMap, playerPosition, mobs, levelType=0):
