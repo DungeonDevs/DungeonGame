@@ -1,0 +1,1 @@
+A folder for storing data created on runtime.

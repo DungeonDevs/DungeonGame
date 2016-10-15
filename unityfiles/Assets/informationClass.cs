@@ -2,8 +2,8 @@
 [System.Serializable]
 public class informationClass
 {
-    public int playerRoatation;
-    public string playerStats;
+    public int[][] mobsInfos;
+    public int[] playerInfo;
     public int[][] tiles;
     public int[][] overlay;
 }

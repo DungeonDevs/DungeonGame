@@ -1,3 +1,6 @@
+'''
+superItem
+'''
 #superclass contains shared variables
 class Item():
     def __init__(self, ID, orientation, isSolid, healthUp, attackUp):
@@ -7,6 +10,9 @@ class Item():
         self.healthUp = healthUp
         self.attackUp = attackUp
 
+'''
+MetaItems
+'''
 #used to indicate that there is no item
 class NoItem(Item):
     def __init__(self):
@@ -26,7 +32,9 @@ class LevelEnd(Item) :
     def trigger(self, callback):
         print("LevelEnd triggered! Override for use!")
         pass
-
+'''
+CollectableItems
+'''
 #first real item, increases attack by 10
 class Sword(Item):
     def __init__(self):
