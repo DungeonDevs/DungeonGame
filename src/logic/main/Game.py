@@ -37,6 +37,8 @@ class Game(object):
         self.mapHandler.createBorders(self.gameMap, 10,10)
         while self.running:
             self.tick()
+            if(self.running is False):
+                break
         if(callback):
             callback(gameWon)
 
@@ -46,6 +48,7 @@ class Game(object):
         self.mobMove()
         self.fight()
         self.itemAction()
+        self.checkHealth()
 
     def display(self):
         self.engine.display(self.gameMap, self.player.info, self.mobs)
@@ -82,11 +85,7 @@ class Game(object):
         for a in range(len(self.mobs)):
             if self.mobs[a].info[0] == self.player.info[0] and self.mobs[a].info[1] == self.player.info[1]:
                 self.player.info[4] -= (self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]
-                if self.player.info[4] <= 0:
-                    self.gameWon = False
-                    print("You lost!")
-                    self.running = False
-                else:
+                if (not self.player.info[4] <= 0):
                     #TODO: heal the player self.player.heal()
                     dead += [a]
 
@@ -103,6 +102,12 @@ class Game(object):
             self.player.info[3] += item.attackUp
             self.player.info[4] += item.healthUp
             self.gameMap[self.player.info[0]][self.player.info[1]].setItem(NoItem())
+
+    def checkHealth(self):
+        if self.player.info[4] <= 0:
+                    self.gameWon = False
+                    print("You lost!")
+                    self.running = False
 
     def loadNextLevel(self, levelToLoad = None, EndGame = False):
         if(EndGame):
