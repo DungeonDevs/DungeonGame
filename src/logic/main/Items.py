@@ -1,4 +1,4 @@
-from src.logic.main.Item import Item, Interactable, LevelEnd
+from src.logic.main.Item import Item, Interactable, LevelEnd, GameObject
 '''
 CollectableItems
 '''
@@ -9,8 +9,8 @@ class Sword(Item):
 '''
 InteractableItems
 '''
-class Leather(Item,Interactable):
+class Leather(Interactable):
     def __init__(self):
-        Item.__init__(self, 3, 0, False, 0, 0)
+        Interactable.__init__(self, 3, 0, False)
     def interact(self, player, gameMap, mobs):
-        gameMap[4][4].setItem(Sword())
+        gameMap[4][4].setGameObject(Sword())

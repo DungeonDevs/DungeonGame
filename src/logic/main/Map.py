@@ -1,11 +1,11 @@
 from src.logic.main.Tile import Ground, Wall
-from src.logic.main.Item import NoItem
+from src.logic.main.Item import Empty
 import json
 #TODO: make use it´s ability to read .json files for permanent map-saves, see if there's a way to get rid of unused variable message
 #contains useful methods to change or create maps
 class MapHandler(object):
     def createMap(self, xSize, ySize):
-        return [[Ground(NoItem()) for x in range(xSize)] for y in range(ySize)]
+        return [[Ground(Empty()) for x in range(xSize)] for y in range(ySize)]
 
     @staticmethod
     def loadMap(self, levelID):

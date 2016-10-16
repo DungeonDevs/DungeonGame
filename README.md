@@ -17,3 +17,6 @@ and
 - attack
 - block
 - health
+
+This branch contains an different version of the game which uses gameObjects as a superclass of Items to empower
+the game to contain much more interresting items without getting to croweded.

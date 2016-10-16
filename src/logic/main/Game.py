@@ -1,12 +1,14 @@
 from src.logic.main.Map import MapHandler
-from src.logic.main.Entity import Player, Monster
+from src.logic.main.Entity import Player, Monster, IntelligentMonster
 
 from src.logic.main.Engine import Engine, InputHandler
-from src.logic.main.Item import NoItem, LevelEnd, Interactable
+from src.logic.main.Item import Empty, LevelEnd, Interactable, Item
+#import for testing only
 from src.logic.main.Items import Leather, Sword
+from src.logic.entitys.monsters import Hunter
 #from src.logic.main.Tile import Wall
 #from src.logic.main.Item import SolidItem
-
+import time
 #TODO: clean this up, remove test-code
 #main class, contains main-loop
 class Game(object):
@@ -15,13 +17,13 @@ class Game(object):
     inputHandler = InputHandler()
     mapHandler = MapHandler()
     gameMap = mapHandler.createMap(10, 10)
-    gameMap[8][8].setItem(Leather())
-    gameMap[1][2].setItem(LevelEnd())
+    gameMap[8][8].setGameObject(Leather())
+    #gameMap[1][2].setGameObject(LevelEnd())
     levelID = 0 # stores which level is played right now
     #gameMap[2][2] = Wall()
     #gameMap[2][4].setItem(SolidItem())
     player = Player(1,1,1,10,30, None)
-    mobs = [Monster(5,5,0,5,21),Monster(5,5,0,5,21),Monster(5,5,0,5,21)]
+    mobs = [Monster(5,5,0,5,21),Monster(5,5,0,5,21),Monster(5,5,0,5,21), Hunter(5,5,0,2,10,100)]
     #mobs += [Monster(5,5,0,5,21)]
     #mobs += [Monster(4,4,0,5,21)]
     #mobs += [Monster(2,6,0,5,21)]
@@ -36,6 +38,7 @@ class Game(object):
         if(not (hero is None)):
             player = hero
         self.mapHandler.createBorders(self.gameMap, 10,10)
+        self.deltaTime = time.time()
         while self.running:
             self.tick()
             if(self.running is False):
@@ -45,10 +48,12 @@ class Game(object):
 
     def tick(self):
         self.display()
+        print("deltaTime: " + str(time.time() - self.deltaTime))
         self.playerMove()
+        self.deltaTime  = time.time()
         self.mobMove()
         self.fight()
-        self.itemAction()
+        self.gameObjectAction()
         self.checkHealth()
 
     def display(self):
@@ -58,7 +63,7 @@ class Game(object):
         inputKey = self.inputHandler.getInput()
         if inputKey == "w":
             self.player.move(0)
-            if self.gameMap[self.player.info[0]][self.player.info[1]].getIsSolid() or self.gameMap[self.player.info[0]][self.player.info[1]].item.isSolid:
+            if self.gameMap[self.player.info[0]][self.player.info[1]].getIsSolid() or self.gameMap[self.player.info[0]][self.player.info[1]].gameObject.isSolid:
                 self.player.move(1)
         elif inputKey == "a":
             self.player.info[2] -= 1
@@ -70,15 +75,21 @@ class Game(object):
                 self.player.info[2] = 0
         elif inputKey == "s":
             self.player.move(1)
-            if self.gameMap[self.player.info[0]][self.player.info[1]].getIsSolid() or self.gameMap[self.player.info[0]][self.player.info[1]].item.isSolid:
+            if self.gameMap[self.player.info[0]][self.player.info[1]].getIsSolid() or self.gameMap[self.player.info[0]][self.player.info[1]].gameObject.isSolid:
                 self.player.move(0)
         elif inputKey == "stop":
             self.running = False
 
     def mobMove(self):
         for a in range(len(self.mobs)):
+            #intelliget monsters behave another way
+
+            if(isinstance(self.mobs[a], IntelligentMonster)):
+                print(self.mobs[a].info)
+                self.mobs[a].move(self.player,self.gameMap)
+                continue
             self.mobs[a].move(0, True)
-            if self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].getIsSolid() or self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].item.isSolid:
+            if self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].getIsSolid() or self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].gameObject.isSolid:
                 self.mobs[a].move(1, False)
 
     def fight(self):
@@ -93,19 +104,26 @@ class Game(object):
         for a in range(len(dead)):
             self.mobs.pop(dead[a])
 
-    def itemAction(self):
-        item = self.gameMap[self.player.info[0]][self.player.info[1]].item
+    def gameObjectAction(self):
+        gameObject = self.gameMap[self.player.info[0]][self.player.info[1]].gameObject
 
-        if item != NoItem():
-            self.player.info[3] += item.attackUp
-            self.player.info[4] += item.healthUp
-            self.gameMap[self.player.info[0]][self.player.info[1]].setItem(NoItem())
+        if isinstance(gameObject, Empty):
+            return
 
-        if isinstance(item, LevelEnd):
-            item.trigger(self.loadNextLevel) # handing over a callback so diverent LevelEnd-items can behave in different ways
+        #use the stats of the item to buff the player
+        if isinstance(gameObject, Item):
+            self.player.info[3] += gameObject.attackUp
+            self.player.info[4] += gameObject.healthUp
 
-        if isinstance(item, Interactable):
-            item.interact(self.player, self.gameMap, self.mobs)
+        # handing over a callback so different LevelEnd-items can behave in different ways
+        if isinstance(gameObject, LevelEnd):
+            gameObject.trigger(self.loadNextLevel)
+
+        # handing over a few important objects, so different InteractableObejcts can behave in interesting different ways
+        if isinstance(gameObject, Interactable):
+            gameObject.interact(self.player, self.gameMap, self.mobs)
+
+        self.gameMap[self.player.info[0]][self.player.info[1]].setGameObject(Empty())
 
     def checkHealth(self):
         if self.player.info[4] <= 0:
@@ -116,7 +134,7 @@ class Game(object):
     def loadNextLevel(self, levelToLoad = None, EndGame = False):
         if(EndGame):
             self.gameWon = True
-
+            return
         if(not levelToLoad is None): # if a levelToLoad is hand over load this level
              self.levelID = levelToLoad
         else: # else load the level with the next id

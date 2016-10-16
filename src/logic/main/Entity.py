@@ -1,4 +1,6 @@
 import random
+import enum
+
 #superclass for mobs and player, contains shared variables and methods
 class Entity(object):
     def __init__(self, xPos, yPos, orientation, attack, health):
@@ -42,10 +44,18 @@ class Player(Entity):
 #TODO: make their movement more interesting/intelligent/less random
 #basic opponent
 class Monster(Entity):
-    def __init__(self, xPos, yPos, orientation, attack, health):
+    def __init__(self, xPos, yPos, orientation, attack, health, ID = 0):
         Entity.__init__(self, xPos, yPos, orientation, attack, health)
-
+        self.ID = ID
     def move(self, direction, turn):
         if turn:
             self.info[2] = random.randint(0,4)
         Entity.move(self, direction)
+
+# A class for monsters which functions need more information to function
+class IntelligentMonster(Monster):
+    def __init__(self, xPos, yPos, orientation, attack, health, ID = 0):
+        Monster.__init__(self, xPos, yPos, orientation, attack, health, ID = ID)
+
+    def move(self, player, gameMap):
+        pass
