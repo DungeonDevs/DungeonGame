@@ -3,12 +3,9 @@ from src.logic.main.Entity import Player, Monster, IntelligentMonster
 
 from src.logic.main.Engine import Engine, InputHandler
 from src.logic.main.Item import Empty, LevelEnd, Interactable, Item
-#import for testing only
+#imports for testing only
 from src.logic.main.Items import Leather, Sword
 from src.logic.entitys.monsters import Hunter
-#from src.logic.main.Tile import Wall
-#from src.logic.main.Item import SolidItem
-import time
 #TODO: clean this up, remove test-code
 #main class, contains main-loop
 class Game(object):
@@ -18,15 +15,9 @@ class Game(object):
     mapHandler = MapHandler()
     gameMap = mapHandler.createMap(10, 10)
     gameMap[8][8].setGameObject(Leather())
-    #gameMap[1][2].setGameObject(LevelEnd())
     levelID = 0 # stores which level is played right now
-    #gameMap[2][2] = Wall()
-    #gameMap[2][4].setItem(SolidItem())
     player = Player(1,1,1,10,30, None)
     mobs = [Monster(5,5,0,5,21),Monster(5,5,0,5,21),Monster(5,5,0,5,21), Hunter(5,5,0,2,10,100)]
-    #mobs += [Monster(5,5,0,5,21)]
-    #mobs += [Monster(4,4,0,5,21)]
-    #mobs += [Monster(2,6,0,5,21)]
     running = True
     gameWon = None
     '''
@@ -38,7 +29,6 @@ class Game(object):
         if(not (hero is None)):
             player = hero
         self.mapHandler.createBorders(self.gameMap, 10,10)
-        self.deltaTime = time.time()
         while self.running:
             self.tick()
             if(self.running is False):
@@ -46,19 +36,18 @@ class Game(object):
         if(callback):
             callback(gameWon)
 
+    #called in the main loop
     def tick(self):
         self.display()
-        print("deltaTime: " + str(time.time() - self.deltaTime))
         self.playerMove()
-        self.deltaTime  = time.time()
         self.mobMove()
         self.fight()
         self.gameObjectAction()
         self.checkHealth()
-
+    #tick 0
     def display(self):
         self.engine.display(self.gameMap, self.player.info, self.mobs)
-
+    #tick 1 - blocking input Methode
     def playerMove(self):
         inputKey = self.inputHandler.getInput()
         if inputKey == "w":
@@ -80,10 +69,10 @@ class Game(object):
         elif inputKey == "stop":
             self.running = False
 
+    #tick 2
     def mobMove(self):
         for a in range(len(self.mobs)):
-            #intelliget monsters behave another way
-
+            #intelligent monsters behave another way
             if(isinstance(self.mobs[a], IntelligentMonster)):
                 print(self.mobs[a].info)
                 self.mobs[a].move(self.player,self.gameMap)
@@ -91,7 +80,7 @@ class Game(object):
             self.mobs[a].move(0, True)
             if self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].getIsSolid() or self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].gameObject.isSolid:
                 self.mobs[a].move(1, False)
-
+    #tick 3
     def fight(self):
         dead = []
         for a in range(len(self.mobs)):
@@ -103,13 +92,12 @@ class Game(object):
 
         for a in range(len(dead)):
             self.mobs.pop(dead[a])
-
+    #tick 4
     def gameObjectAction(self):
         gameObject = self.gameMap[self.player.info[0]][self.player.info[1]].gameObject
 
         if isinstance(gameObject, Empty):
             return
-
         #use the stats of the item to buff the player
         if isinstance(gameObject, Item):
             self.player.info[3] += gameObject.attackUp
@@ -125,6 +113,7 @@ class Game(object):
 
         self.gameMap[self.player.info[0]][self.player.info[1]].setGameObject(Empty())
 
+    #tick 5 last
     def checkHealth(self):
         if self.player.info[4] <= 0:
                     self.gameWon = False
