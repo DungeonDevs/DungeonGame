@@ -1,11 +1,11 @@
 from src.logic.main.Map import MapHandler
 from src.logic.main.Entity import Player, Monster, IntelligentMonster
-
+import src.utils.astar as astar
 from src.logic.main.Engine import Engine, InputHandler
 from src.logic.main.Item import Empty, LevelEnd, Interactable, Item
 #imports for testing only
-from src.logic.main.Items import Leather, Sword
-from src.logic.entitys.monsters import Hunter
+from src.logic.objects.GameObjects import Leather, Sword
+from src.logic.objects.Monsters import Hunter
 #TODO: clean this up, remove test-code
 #main class, contains main-loop
 class Game(object):
@@ -13,11 +13,13 @@ class Game(object):
     engine = Engine()
     inputHandler = InputHandler()
     mapHandler = MapHandler()
-    gameMap = mapHandler.createMap(10, 10)
-    gameMap[8][8].setGameObject(Leather())
+
+    #gameMap = mapHandler.createMap(10, 10)
+    #gameMap[8][8].setGameObject(Leather())
     levelID = 0 # stores which level is played right now
     player = Player(1,1,1,10,30, None)
-    mobs = [Monster(5,5,0,5,21),Monster(5,5,0,5,21),Monster(5,5,0,5,21), Hunter(5,5,0,2,10,100)]
+    #mobs = [Monster(5,5,0,5,21),Monster(5,5,0,5,21),Monster(5,5,0,5,21), Hunter(5,5,0,2,10,100)]
+    pathfinding = None #function to generate paths between tiles
     running = True
     gameWon = None
     '''
@@ -28,7 +30,7 @@ class Game(object):
         # if hero is presented the player is set to hero
         if(not (hero is None)):
             player = hero
-        self.mapHandler.createBorders(self.gameMap, 10,10)
+        self.loadLevel(levelToLoad = 0) # load first level
         while self.running:
             self.tick()
             if(self.running is False):
@@ -73,9 +75,9 @@ class Game(object):
     def mobMove(self):
         for a in range(len(self.mobs)):
             #intelligent monsters behave another way
-            if(isinstance(self.mobs[a], IntelligentMonster)):
+            if isinstance(self.mobs[a], IntelligentMonster):
                 print(self.mobs[a].info)
-                self.mobs[a].move(self.player,self.gameMap)
+                self.mobs[a].move(self.gameMap, self.player, self.mobs, self.pathfinding)
                 continue
             self.mobs[a].move(0, True)
             if self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].getIsSolid() or self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].gameObject.isSolid:
@@ -120,7 +122,8 @@ class Game(object):
                     print("You lost!")
                     self.running = False
 
-    def loadNextLevel(self, levelToLoad = None, EndGame = False):
+
+    def loadLevel(self, levelToLoad = None, EndGame = False):
         if(EndGame):
             self.gameWon = True
             return
@@ -129,5 +132,6 @@ class Game(object):
         else: # else load the level with the next id
             self.levelID = self.levelID + 1
 
-        self.gameMap, self.mobs, self.player.info[0], self.player.info[1] = MapHandler.loadMap(levelID)
+        self.gameMap, self.mobs, self.player.info[0], self.player.info[1] = MapHandler.loadMap(self.levelID)
         self.mapHandler.createBorders(self.gameMap, len(self.gameMap),len(self.gameMap[0]))
+        self.pathfinding = astar.pathfinder(neighbors=astar.grid_neighbors_custom(len(self.gameMap), len(self.gameMap[0]), self.gameMap), cost=astar.custom_costs(self.gameMap))

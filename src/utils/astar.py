@@ -1,4 +1,6 @@
+
 """
+@author
 The pathfinding module can be used to find the shortest
 path between two points in a graph.
 To use the pathfinder for the default case:
@@ -145,3 +147,28 @@ def pathfinder( neighbors=grid_neighbors( 100, 100 ),
 
         return None, []
     return func
+
+#customfunctions extedning the original functionality
+def custom_costs(gameMap):
+    """
+    Return a cost based on whether there is is a wall or not.
+    wall costs are infinit
+    """
+    def func( a, b ):
+        if gameMap[b[0]][b[1]].getIsSolid():
+            return math.inf
+        return 0
+    return func
+
+def grid_neighbors_custom(height, width, gameMap ):
+        def func( coord ):
+            neighbor_list = [ ( coord[ 0 ], coord[ 1 ] + 1),
+                            ( coord[ 0 ], coord[ 1 ] - 1),
+                            ( coord[ 0 ] + 1, coord[ 1 ]),
+                            ( coord[ 0 ] - 1, coord[ 1 ])]
+            return [ c for c in neighbor_list
+                    if c != coord
+                    and c[0] >= 0 and c[0] < width
+                    and c[1] >= 0 and c[1] < height
+                    and not gameMap[c[0]][c[1]].getIsSolid()]
+        return func

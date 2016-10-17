@@ -25,7 +25,7 @@ class Engine():
         yCo = 0
         for _ in overlayTiles:
             for tile in _:
-                    overlayTiles[xCo][yCo] = tile.item.ID
+                overlayTiles[xCo][yCo] = tile.item.ID
                 yCo = yCo + 1
             xCo = xCo + 1
         #prepare mobs

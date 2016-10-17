@@ -1,7 +1,7 @@
 # DungeonGame
 Authors: Maximilian Lohmann, Tom Bloecker, Jannis Jorre, Nicolas von Luetzow
 
-to run the game run __init__.py
+to run the game run run.py
 
 Original attributes:
 - courage
