@@ -5,6 +5,8 @@ def getLevel():
     mapHandler = MapHandler()
     gameMap = mapHandler.createMap(*size)
 
+    [WallDeclarations]
+
     # [ObjectDeclarations] is replaced with declarations following the style:  gameMap[<X>][<Y>].setGameObject(<ObjectName>()).
     # in edge cases you can add special Arguments gameMap[<X>][<Y>].setGameObject(<ObjectName>(*<Arguments>))
     # or add custom code gameMap[<X>][<Y>].gameObject.<CustomCode>
@@ -12,7 +14,7 @@ def getLevel():
     mobs = []
     # [MobDeclarations] is replaced with declarations following the style:  mobs.append(<Mobname>()).
     # in edge cases you can add special Arguments mobs.append(<Mobname>(*<Arguments>))
-    # or add custom code mobs[1].<CustomCode>
+    # or add custom code mobs[-1].<CustomCode>
     [MobDeclarations]
 
     playerPositionX = <playerPositionX>
