@@ -18,7 +18,7 @@ class Game(object):
     #gameMap[8][8].setGameObject(Leather())
     levelID = 0 # stores which level is played right now
     player = Player(1,1,1,10,30, None)
-    #mobs = [Monster(5,5,0,5,21),Monster(5,5,0,5,21),Monster(5,5,0,5,21), Hunter(5,5,0,2,10,100)]
+    #mobs = [Monster(5,5,0,5,21),Monster(5,5,0,health=5,attack=21),Monster(5,5,0,health=5,attack=21), Hunter(5,5,0,health=2,attack=10,eyesight=100)]
     pathfinding = None #function to generate paths between tiles
     running = True
     gameWon = None

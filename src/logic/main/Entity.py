@@ -50,7 +50,7 @@ class Player(Entity):
 superclass for all monsters. Can be instantiated to a monster with random movement
 '''
 class Monster(Entity):
-    def __init__(self, xPos, yPos, orientation, attack, health, ID = 0):
+    def __init__(self, xPos, yPos, orientation, attack=10, health=10, ID = 0):
         Entity.__init__(self, xPos, yPos, orientation, attack, health)
         self.ID = ID
     def move(self, direction, turn):
