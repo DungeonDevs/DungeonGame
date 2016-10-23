@@ -7,24 +7,27 @@ class GameObject():
         self.orientation = orientation
         self.isSolid = isSolid
 
-#superclass for all obejcts that shall interact with the gameMap, the monbs or the player itself and not just with the player stats
-class Interactable(GameObject):
-    def __init__(self, ID, orientation, isSolid):
-         GameObject.__init__(self, ID, orientation, isSolid)
-    def interact(self, player, gameMap, mobs):
-        print("Interaction triggered! Override for use!")
-
 #superclass contains shared variables
+#ID starts with 1
 class Item(GameObject):
     def __init__(self, ID, orientation, isSolid, healthUp, attackUp):
         GameObject.__init__(self, ID, orientation, isSolid)
         self.healthUp = healthUp
         self.attackUp = attackUp
 
+#superclass for all obejcts that shall interact with the gameMap, the monbs or the player itself and not just with the player stats
+#ID starts with 2
+class Interactable(GameObject):
+    def __init__(self, ID, orientation, isSolid):
+         GameObject.__init__(self, ID, orientation, isSolid)
+    def interact(self, player, gameMap, mobs):
+        print("Interaction triggered! Override for use!")
+
 #superclass for all objetcs that shall end a level (or call another level)
+#ID starts with 3
 class LevelEnd(GameObject) :
-    def __init__(self):
-         GameObject.__init__(self, 100, 0, False)
+    def __init__(self, ID, isSolid):
+         GameObject.__init__(self, ID, 0, False)
 
     #call the callback with a specific levelId
     def trigger(self, callback):
@@ -41,4 +44,4 @@ class Empty(GameObject):
 #test item to see if solid works
 class SolidItem(Item):
     def __init__(self):
-        Item.__init__(self, 1, 0, True, 0, 0)
+        Item.__init__(self, 11, 0, True, 0, 0)
