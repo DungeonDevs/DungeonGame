@@ -1,4 +1,5 @@
 import random
+
 #superclass for mobs and player, contains shared variables and methods
 class Entity(object):
     def __init__(self, xPos, yPos, orientation, attack, health):
@@ -30,22 +31,39 @@ class Entity(object):
             elif self.info[2] == 3:
                 self.info[0] += 1
 
+    #returns the postition as a pair
+    def getPosition(self):
+        return self.info[0], self.info[1]
+
 #TODO: implement different playerClasses
 class Player(Entity):
     # orientation from top to left: 0,1,2,3
     def __init__(self, xPos, yPos, orientation, attack, health, playerClass):
         Entity.__init__(self, xPos, yPos, orientation, attack, health)
         self.info[5] = playerClass
+
     #override in subclasses
     def heal():
         pass
-#TODO: make their movement more interesting/intelligent/less random
-#basic opponent
-class Monster(Entity):
-    def __init__(self, xPos, yPos, orientation, attack, health):
-        Entity.__init__(self, xPos, yPos, orientation, attack, health)
 
+'''
+superclass for all monsters. Can be instantiated to a monster with random movement
+'''
+class Monster(Entity):
+    def __init__(self, xPos, yPos, orientation, attack=10, health=10, ID = 0):
+        Entity.__init__(self, xPos, yPos, orientation, attack, health)
+        self.ID = ID
     def move(self, direction, turn):
         if turn:
             self.info[2] = random.randint(0,4)
         Entity.move(self, direction)
+
+'''
+A class for monsters with functions need more information to work.
+'''
+class IntelligentMonster(Monster):
+    def __init__(self, xPos, yPos, orientation, attack, health, ID = 0):
+        Monster.__init__(self, xPos, yPos, orientation, attack, health, ID = ID)
+
+    def move(self, gameMap, player, mobs, pathfinder):
+        pass

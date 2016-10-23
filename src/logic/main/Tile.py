@@ -1,20 +1,20 @@
-from src.logic.main.Item import NoItem
+from src.logic.main.Item import Empty
 #TODO: clean this up, getters and setters
 #Tile superclass contains needed variables and methods for all tiles
 class Tile(object):
-    def __init__(self, isSolid, item):
+    def __init__(self, isSolid, gameObject):
         self.isSolid = isSolid
-        self.item = item
+        self.gameObject = gameObject
 
-    def setItem(self, item):
-        self.item = item
+    def setGameObject(self, gameObject):
+        self.gameObject = gameObject
 
     def getIsSolid(self):
         return self.isSolid
 
 class Ground(Tile):
-    def __init__(self, item):
-        Tile.__init__(self, False, item)
+    def __init__(self, gameObject):
+        Tile.__init__(self, False, gameObject)
 
     #only used for "text"-engine no need to keep it afterwards
     def getTile(self):
@@ -22,7 +22,7 @@ class Ground(Tile):
 
 class Wall(Tile):
     def __init__(self):
-        Tile.__init__(self, True, NoItem())
+        Tile.__init__(self, True, Empty())
 
     #only used for "text"-engine no need to keep it afterwards
     def getTile(self):
