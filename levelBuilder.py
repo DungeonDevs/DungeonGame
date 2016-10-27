@@ -1,10 +1,13 @@
 from tkinter import *
+from tkinter.filedialog import *
+from tkinter.simpledialog import Dialog
 from src.logic.main.Map import *
 from src.logic.objects.Monsters import *
+import threading
 import os
 
 class Levelbuilder():
-    def __init__(self, width, height):
+    def __init__(self,width, height):
         self.GameObjects = ["Empty","Sword"] # A list of all possible GameObjects
         self.Mobs = ["Monster","Hunter"] # A list of all possible GameObjects
         self.Objects =[]
@@ -28,6 +31,7 @@ class Levelbuilder():
                 f.pack_propagate(0) # don't shrink
                 f.grid(row=yCo, column=xCo)
                 self.buttonMap[xCo][yCo] = Button(f, command = self.getFunction(xCo,yCo), height=2, width = 2)
+                self.buttonMap[xCo][yCo].bind('<Button-3>', lambda event,xVal=xCo, yVal=yCo: self.setWall(xVal,yVal)) #self.getFunctionSetWall(xCo,yCo))
                 self.buttonMap[xCo][yCo].pack(fill=BOTH, expand=1)
                 #self.buttonMap[xCo][yCo].grid(row=yCo, column=xCo)
                 yCo = yCo + 1
@@ -39,7 +43,6 @@ class Levelbuilder():
         self.GameObjects_radiobutton = Radiobutton(master=self.radiogroup,
                                               text='Display GameObjects',
                                               font=('Comic Sans MS',10),
-                                              bg='darkgray',
                                               value='0', variable=self.display,
                                               command=self.updateMap)
         self.GameObjects_radiobutton.select()
@@ -47,7 +50,6 @@ class Levelbuilder():
         self.Mobs_radiobutton = Radiobutton(master=self.radiogroup,
                                               text='Display Mobs',
                                               font=('Comic Sans MS',10),
-                                              bg='darkgray',
                                               value='1', variable=self.display,
                                               command=self.updateMap)
         self.Mobs_radiobutton.grid(row=0, column=1)
@@ -56,16 +58,27 @@ class Levelbuilder():
         #PrepareSettings
         self.settings = Frame(self.window)
         self.settings.grid(row=0, column=1, sticky=E)
-        self.window.mainloop()
 
-    def getFunction(self,xCo, YCo):
+        #Menubar
+        self.menubar = Menu(self.window)
+        self.menubar.add_command(label="save", command=self.save)
+        self.menubar.add_command(label="Quit!", command=self.window.quit)
+        self.window.config(menu=self.menubar)
+
+        self.window.mainloop()
+    def setWall(self, xCo, yCo):
+        #def function():
+        self.gameMap[xCo][yCo].isSolid = not self.gameMap[xCo][yCo].isSolid
+        self.updateMap()
+        #return function
+
+    def getFunction(self,xCo, yCo):
         def function():
-            self.openSettings(xCo,YCo)
+            self.openSettings(xCo,yCo)
         return function
 
     def openSettings(self, x, y):
         print("open settings")
-        print(self.display.get())
         self.settings.destroy()
         self.settings = Frame(self.window)
         self.settings.grid(row=0, column=1, sticky=E)
@@ -122,7 +135,6 @@ class Levelbuilder():
             self.settings.CuCoInput = Frame(self.settings)
             self.settings.CuCoInput.grid(row = 2,column=1)
             self.selectedObject = self.getGameObjectAt(x,y)
-            print(self.selectedObject)
             if(self.selectedObject is None):
                 self.selectedObject = ["Empty",x,y,[]]
                 self.settings.containing = False
@@ -152,6 +164,7 @@ class Levelbuilder():
 
     def setGameObjectAt(self, x, y, name, customCodes):
         self.Objects.append([name,x,y,customCodes])
+        self.updateMap()
 
     def cleanGameObjectsList(self):
         for a in range(len(self.Objects)):
@@ -168,10 +181,12 @@ class Levelbuilder():
         yCo = 0
         for x in self.buttonMap:
             for y in x:
-                if( self.gameMap[xCo][yCo].getIsSolid is True):
+                if( self.gameMap[xCo][yCo].isSolid is True):
                     self.buttonMap[xCo][yCo].config(bg="black")
+                    self.buttonMap[xCo][yCo].config(fg="white")
                 else:
                     self.buttonMap[xCo][yCo].config(bg="white")
+                    self.buttonMap[xCo][yCo].config(fg="Black")
                 '''
                 if(not isinstance( self.gameMap[xCo][yCo].gameObject, Empty)):
                     self.buttonMap[xCo][yCo].config(text="")
@@ -181,13 +196,13 @@ class Levelbuilder():
                 yCo = yCo + 1
             yCo = 0
             xCo = xCo + 1
-        if self.display == 0:
+        if self.display.get() == 0:
             for gO in self.Objects:
                 try:
                     self.buttonMap[gO[1]][gO[2]].image = PhotoImage(file="resources/" + gO[0]+"default.png")
                     self.buttonMap[gO[1]][gO[2]].config(image=self.buttonMap[gO[1]][gO[2]].image)
                 except Exception:
-                    self.buttonMap[mob[1]][mob[2]].config(text="G")
+                    self.buttonMap[gO[1]][gO[2]].config(text="G")
         else:
             for mob in self.mobs:
                 try:
@@ -195,7 +210,9 @@ class Levelbuilder():
                     self.buttonMap[mob[1]][mob[2]].config(image=self.buttonMap[mob[1]][mob[2]].image)
                 except Exception:
                     self.buttonMap[mob[1]][mob[2]].config(text="M")
-    def save(self, path):
+    def save(self):
+        path = asksaveasfilename()
+        return print(path)
         resultMap = ""
         xCo = 0
         yCo = 0
@@ -234,8 +251,4 @@ class Levelbuilder():
         #string = string.replace("\n", "\n    ") #intend
         #writefile
 
-level = Levelbuilder(10,10)
-def sad(x=1,y=2,z=3):
-    print(x,y,z)
-sad(*[2,3,4])
-print(Hunter(0,0,0,*[2,3]).eyesight)
+level = Levelbuilder(20,10)
