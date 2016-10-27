@@ -212,43 +212,45 @@ class Levelbuilder():
                     self.buttonMap[mob[1]][mob[2]].config(text="M")
     def save(self):
         path = asksaveasfilename()
-        return print(path)
+        print(path)
         resultMap = ""
         xCo = 0
         yCo = 0
         for x in self.gameMap:
             for y in x:
                 if( self.gameMap[xCo][yCo].getIsSolid is True):
-                    resultMap.add("gameMap[" + xCo + "]["+yCo+"] = Wall()\n")
+                    resultMap += "gameMap[" + str(xCo) + "]["+str(yCo)+"] = Wall()\n"
                 else:
-                    resultMap.add("gameMap[" + xCo + "]["+yCo+"] = Ground()\n")
+                    resultMap += "gameMap[" + str(xCo) + "]["+str(yCo)+"] = Ground()\n"
                 yCo = yCo + 1
             yCo = 0
             xCo = xCo + 1
         #Items and other Gameobjects
-        resultObjects = ""
+        resultObjects =  ""
         for gO in self.Objects:
-            resultObjects.add("gameMap[{gO[1]}][{gO[2]}].setGameObject({go[0]}())\n")
+            resultObjects += "gameMap[{gO[1]}][{gO[2]}].setGameObject({go[0]}())\n"
             if not (go[3] is None):
                 for CustomCode in go[3]:
-                    resultObjects.add("gameMap[{gO[1]}][{gO[2]}].gameObject.{CustomCode}\n")
+                    resultObjects +="gameMap[{gO[1]}][{gO[2]}].gameObject.{CustomCode}\n"
         #mobs
         resultMobs = ""
         for mob in self.mobs:
             if(mob[4] is None): # if there are no special arguments
-                resultMobs.add("mobs.append({mob[0]}({mob[1]}, {mob[2]}, {mob[3]}))\n")
+                resultMobs += "mobs.append({mob[0]}({mob[1]}, {mob[2]}, {mob[3]}))\n"
             else:
-                resultMobs.add("mobs.append({mob[0]}({mob[1]}, {mob[2]}, {mob[3]},*{mob[4]}))\n")
+                resultMobs += "mobs.append({mob[0]}({mob[1]}, {mob[2]}, {mob[3]},*{mob[4]}))\n"
             if not (go[2] is None):
                 for CustomCode in go[2]:
-                    resultMobs.add("mobs[-1].{CustomCode}\n")
+                    resultMobs += "mobs[-1].{CustomCode}\n"
         #readfile
         #file = readfile()
-        updatedFile = file.split("[WallDeclarations]")[0]+ resultMap + file.split("[WallDeclarations]")[1]
-        updatedFile = updateFile.split("[ObjectDeclarations]")[0]+ resultObjects + updateFile.split("[ObjectDeclarations]")[1]
-        updatedFile = updateFile.split("[MobDeclarations]")[0]+ resultObjects + updateFile.split("[MobDeclarations]")[1]
+        template = open('resources/maps/levelTemplate.py', 'r').read()
+        updatedFile = template.split("[WallDeclarations]")[0]+ resultMap.replace("\n", "\n    ") + template.split("[WallDeclarations]")[1]
+        updatedFile = updatedFile.split("[ObjectDeclarations]")[0]+ resultObjects.replace("\n", "\n    ") + updatedFile.split("[ObjectDeclarations]")[1]
+        updatedFile = updatedFile.split("[MobDeclarations]")[0] + resultMobs.replace("\n", "\n    ") + updatedFile.split("[MobDeclarations]")[1]
         #format somehow
-        #string = string.replace("\n", "\n    ") #intend
+        #updatedFile = updatedFile.replace("\n", "\n        ") #intend
+        open(path,"w").write(updatedFile)
         #writefile
 
 level = Levelbuilder(20,10)

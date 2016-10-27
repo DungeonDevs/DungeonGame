@@ -7,12 +7,12 @@ def getLevel():
 
     [WallDeclarations]
 
-    # [ObjectDeclarations] is replaced with declarations following the style:  gameMap[<X>][<Y>].setGameObject(<ObjectName>()).
+    # ObjectDeclarations is replaced with declarations following the style:  gameMap[<X>][<Y>].setGameObject(<ObjectName>()).
     # in edge cases you can add special Arguments gameMap[<X>][<Y>].setGameObject(<ObjectName>(*<Arguments>))
     # or add custom code gameMap[<X>][<Y>].gameObject.<CustomCode>
     [ObjectDeclarations]
     mobs = []
-    # [MobDeclarations] is replaced with declarations following the style:  mobs.append(<Mobname>()).
+    # MobDeclarations is replaced with declarations following the style:  mobs.append(<Mobname>()).
     # in edge cases you can add special Arguments mobs.append(<Mobname>(*<Arguments>))
     # or add custom code mobs[-1].<CustomCode>
     [MobDeclarations]
