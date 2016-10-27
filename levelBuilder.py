@@ -222,20 +222,20 @@ class Levelbuilder():
         #Items and other Gameobjects
         resultObjects =  ""
         for gO in self.Objects:
-            resultObjects += "gameMap["+gO[1]+"]["+gO[2]+"].setGameObject("+go[0]+"())\n"
+            resultObjects += "gameMap["+str(gO[1])+"]["+str(gO[2])+"].setGameObject("+str(gO[0])+"())\n"
             if not (gO[3] is None):
                 for CustomCode in gO[3]:
-                    resultObjects +="gameMap["+gO[1]+"]["+gO[2]+"].gameObject."+CustomCode+"\n"
+                    resultObjects +="gameMap["+str(gO[1])+"]["+str(gO[2])+"].gameObject."+str(CustomCode)+"\n"
         #mobs
         resultMobs = ""
         for mob in self.mobs:
             if(mob[4] is None): # if there are no special arguments
-                resultMobs += "mobs.append("+"mob[0]"+"("+mob[1]+", "+mob[2]+", "+mob[3]+"))\n"
+                resultMobs += "mobs.append("+"mob[0]"+"("+str(mob[1])+", "+str(mob[2])+", "+str(mob[3])+"))\n"
             else:
-                resultMobs += "mobs.append("+"mob[0]"+"("+mob[1]+", "+mob[2]+", "+mob[3]+",*"+mob[4]+"))\n"
+                resultMobs += "mobs.append("+"mob[0]"+"("+str(mob[1])+", "+str(mob[2])+", "+str(mob[3])+",*"+str(mob[4])+"))\n"
             if not (go[2] is None):
                 for CustomCode in go[2]:
-                    resultMobs += "mobs[-1]."+CustomCode+"\n"
+                    resultMobs += "mobs[-1]."+str(CustomCode)+"\n"
 
         template = open('resources/maps/levelTemplate.py', 'r').read()
         updatedFile = template.split("[WallDeclarations]")[0]+ resultMap.replace("\n", "\n    ") + template.split("[WallDeclarations]")[1]
