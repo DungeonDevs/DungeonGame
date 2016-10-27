@@ -1,5 +1,6 @@
 from src.logic.main.Entity import Monster, IntelligentMonster
 from src.utils.astar import *
+import random
 #TODO add new monsters here
 
 #a class using pathfinding to move to the player
@@ -25,3 +26,13 @@ class Hunter(IntelligentMonster):
          target.info[0] -self.eyesight <= self.info[0] and
           target.info[1]  +self.eyesight >= self.info[1] and
            target.info[1]  -self.eyesight <= self.info[1])
+        
+class Slime(Monster):
+    
+    def __init__(self, xPos, yPos, orientation):
+        Monster.__init__(xPos, yPos, orientation, attack = 5, health = 10, ID = 1)
+        
+    def move(self, direction, turn):
+        Monster.move(self, direction, turn)
+        if random.randint(100) > 75:
+            self.info[4] += random.randint(7)

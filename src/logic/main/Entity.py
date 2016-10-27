@@ -31,20 +31,21 @@ class Entity(object):
             elif self.info[2] == 3:
                 self.info[0] += 1
 
-    #returns the postition as a pair
+    #returns the position as a pair
     def getPosition(self):
         return self.info[0], self.info[1]
 
 #TODO: implement different playerClasses
 class Player(Entity):
     # orientation from top to left: 0,1,2,3
-    def __init__(self, xPos, yPos, orientation, attack, health, playerClass):
-        Entity.__init__(self, xPos, yPos, orientation, attack, health)
+    def __init__(self, xPos, yPos, orientation, playerClass):
+        Entity.__init__(self, xPos, yPos, orientation, playerClass.stats[1], playerClass.stats[2])
         self.info[5] = playerClass
 
     #override in subclasses
-    def heal():
-        pass
+    def heal(self):
+        if (random.randint(self.info[5].stats[2]) - self.info[4]) > 0:
+            self.info[4] += random.randint(self.info[5].stats[3])
 
 '''
 superclass for all monsters. Can be instantiated to a monster with random movement
