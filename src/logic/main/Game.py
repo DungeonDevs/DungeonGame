@@ -6,7 +6,7 @@ from src.logic.main.Item import Empty, LevelEnd, Interactable, Item
 #imports for testing only
 from src.logic.objects.GameObjects import Leather, Sword
 from src.logic.objects.Monsters import Hunter
-from src.logic.main.PlayerClass import Knight
+from src.logic.main.PlayerClass import Knight, Healer
 #TODO: clean this up, remove test-code
 #main class, contains main-loop
 class Game(object):
@@ -18,7 +18,7 @@ class Game(object):
     #gameMap = mapHandler.createMap(10, 10)
     #gameMap[8][8].setGameObject(Leather())
     levelID = 0 # stores which level is played right now
-    player = Player(1,1,1,Knight())
+    player = Player(1,1,1,Healer())
     #mobs = [Monster(5,5,0,5,21),Monster(5,5,0,health=5,attack=21),Monster(5,5,0,health=5,attack=21), Hunter(5,5,0,health=2,attack=10,eyesight=100)]
     pathfinding = None #function to generate paths between tiles
     running = True
@@ -71,6 +71,7 @@ class Game(object):
                 self.player.move(0)
         elif inputKey == "stop":
             self.running = False
+        self.player.heal()
 
     #tick 2
     def mobMove(self):
@@ -89,12 +90,14 @@ class Game(object):
         for a in range(len(self.mobs)):
             if self.mobs[a].info[0] == self.player.info[0] and self.mobs[a].info[1] == self.player.info[1]:
                 self.player.info[4] -= (self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]
-                if (not self.player.info[4] <= 0):
-                    self.player.heal()
+                if (not self.player.info[4] <= 0):                    
                     dead += [a]
 
-        for a in range(len(dead)):
-            self.mobs.pop(dead[a])
+        #for a in range(len(dead)):
+        a = len(dead)
+        while a > 0:
+            self.mobs.pop(dead[a - 1])
+            a -= 1
     #tick 4
     def gameObjectAction(self):
         gameObject = self.gameMap[self.player.info[0]][self.player.info[1]].gameObject

@@ -19,6 +19,11 @@ def getLevel():
 
     #[MobDeclarations]
     mobs.append(Hunter(5,6,0))
+    mobs.append(Hunter(4,6,0))
+    mobs.append(Hunter(3,6,0))
+    mobs.append(Hunter(2,6,0))
+    mobs.append(Hunter(4,4,0))
+    mobs.append(Hunter(6,5,0))
 
     playerPositionX = 2
     playerPositionY = 1

@@ -44,8 +44,10 @@ class Player(Entity):
 
     #override in subclasses
     def heal(self):
-        if (random.randint(self.info[5].stats[2]) - self.info[4]) > 0:
-            self.info[4] += random.randint(self.info[5].stats[3])
+        if (random.randint(0, self.info[5].stats[2]) - self.info[4]) > 0:
+            self.info[4] += random.randint(0, self.info[5].stats[3])
+        if (self.info[4] > self.info[5].stats[2]):
+            self.info[4] = self.info[5].stats[2]
 
 '''
 superclass for all monsters. Can be instantiated to a monster with random movement
