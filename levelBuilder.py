@@ -42,14 +42,14 @@ class Levelbuilder():
         self.display.set(0)
         self.GameObjects_radiobutton = Radiobutton(master=self.radiogroup,
                                               text='Display GameObjects',
-                                              font=('Comic Sans MS',10),
+                                              font=('Arial',10),
                                               value='0', variable=self.display,
                                               command=self.updateMap)
         self.GameObjects_radiobutton.select()
         self.GameObjects_radiobutton.grid(row=0, column=0)
         self.Mobs_radiobutton = Radiobutton(master=self.radiogroup,
                                               text='Display Mobs',
-                                              font=('Comic Sans MS',10),
+                                              font=('Arial',10),
                                               value='1', variable=self.display,
                                               command=self.updateMap)
         self.Mobs_radiobutton.grid(row=0, column=1)
@@ -102,7 +102,7 @@ class Levelbuilder():
                 self.settings.argsInput = []
                 addArgsInput()
                 #HeaderArguments
-                self.settings.argsInputHeader= Label(self.settings.ParameterInput,text='Arguments', font=('Comic Sans MS',10))
+                self.settings.argsInputHeader= Label(self.settings.ParameterInput,text='Arguments', font=('Arial',10))
                 self.settings.argsInputHeader.grid(row=0,column = 0)
                 self.settings.addArgsButton = Button(self.settings.ParameterInput, text="+", command=addArgsInput)
                 self.settings.addArgsButton.grid(row=0,column=1)
@@ -119,7 +119,7 @@ class Levelbuilder():
                 self.settings.cuCoInput = []
                 addCuCoInput()
                 #HeaderArguments
-                self.settings.cuCoInputHeader= Label(self.settings.CuCoInput,text='CustomCode', font=('Comic Sans MS',10))
+                self.settings.cuCoInputHeader= Label(self.settings.CuCoInput,text='CustomCode', font=('Arial',10))
                 self.settings.cuCoInputHeader.grid(row=0,column = 0)
                 self.settings.addCuCoButton = Button(self.settings.CuCoInput, text="+", command=addCuCoInput)
                 self.settings.addCuCoButton.grid(row=0,column=1)
@@ -142,7 +142,7 @@ class Levelbuilder():
                 self.settings.containing = True
             self.settings.name = StringVar()
             self.settings.name.set(self.selectedObject[0])
-            self.settings.description = Label(self.settings,text='Choose an Object', font=('Comic Sans MS',10))
+            self.settings.description = Label(self.settings,text='Choose an Object', font=('Arial',10))
             self.settings.description.grid(row=0)
             self.settings.dropdown_Object = OptionMenu(self.settings, self.settings.name,*self.GameObjects)
             self.settings.dropdown_Object.grid(row=1, column=0)
@@ -187,12 +187,6 @@ class Levelbuilder():
                 else:
                     self.buttonMap[xCo][yCo].config(bg="white")
                     self.buttonMap[xCo][yCo].config(fg="Black")
-                '''
-                if(not isinstance( self.gameMap[xCo][yCo].gameObject, Empty)):
-                    self.buttonMap[xCo][yCo].config(text="")
-                else:
-                    self.buttonMap[xCo][yCo].config(text="O")
-                '''
                 yCo = yCo + 1
             yCo = 0
             xCo = xCo + 1
@@ -228,29 +222,25 @@ class Levelbuilder():
         #Items and other Gameobjects
         resultObjects =  ""
         for gO in self.Objects:
-            resultObjects += "gameMap[{gO[1]}][{gO[2]}].setGameObject({go[0]}())\n"
-            if not (go[3] is None):
-                for CustomCode in go[3]:
-                    resultObjects +="gameMap[{gO[1]}][{gO[2]}].gameObject.{CustomCode}\n"
+            resultObjects += "gameMap["+gO[1]+"]["+gO[2]+"].setGameObject("+go[0]+"())\n"
+            if not (gO[3] is None):
+                for CustomCode in gO[3]:
+                    resultObjects +="gameMap["+gO[1]+"]["+gO[2]+"].gameObject."+CustomCode+"\n"
         #mobs
         resultMobs = ""
         for mob in self.mobs:
             if(mob[4] is None): # if there are no special arguments
-                resultMobs += "mobs.append({mob[0]}({mob[1]}, {mob[2]}, {mob[3]}))\n"
+                resultMobs += "mobs.append("+"mob[0]"+"("+mob[1]+", "+mob[2]+", "+mob[3]+"))\n"
             else:
-                resultMobs += "mobs.append({mob[0]}({mob[1]}, {mob[2]}, {mob[3]},*{mob[4]}))\n"
+                resultMobs += "mobs.append("+"mob[0]"+"("+mob[1]+", "+mob[2]+", "+mob[3]+",*"+mob[4]+"))\n"
             if not (go[2] is None):
                 for CustomCode in go[2]:
-                    resultMobs += "mobs[-1].{CustomCode}\n"
-        #readfile
-        #file = readfile()
+                    resultMobs += "mobs[-1]."+CustomCode+"\n"
+
         template = open('resources/maps/levelTemplate.py', 'r').read()
         updatedFile = template.split("[WallDeclarations]")[0]+ resultMap.replace("\n", "\n    ") + template.split("[WallDeclarations]")[1]
         updatedFile = updatedFile.split("[ObjectDeclarations]")[0]+ resultObjects.replace("\n", "\n    ") + updatedFile.split("[ObjectDeclarations]")[1]
         updatedFile = updatedFile.split("[MobDeclarations]")[0] + resultMobs.replace("\n", "\n    ") + updatedFile.split("[MobDeclarations]")[1]
-        #format somehow
-        #updatedFile = updatedFile.replace("\n", "\n        ") #intend
         open(path,"w").write(updatedFile)
-        #writefile
 
 level = Levelbuilder(20,10)
