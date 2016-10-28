@@ -23,11 +23,11 @@ class Game(object):
     levelID = 0 # stores which level is played right now
     levels = 2 #amount of levels there are
     player = Player(1,1,1,Knight())
-    
+
     #function to generate paths between tiles
-    pathfinding = None 
+    pathfinding = None
     #while True the main loop is active
-    running = True 
+    running = True
     gameWon = None
     '''
     @param: hero - the hero to use
@@ -98,21 +98,21 @@ class Game(object):
         for a in range(len(self.mobs)):
 
             #if player and mob are on the same coordinates
-            if self.mobs[a].info[0] == self.player.info[0] and self.mobs[a].info[1] == self.player.info[1]: 
+            if self.mobs[a].info[0] == self.player.info[0] and self.mobs[a].info[1] == self.player.info[1]:
                 #randomly no damage taken at all, depends on agility, dexterity and intuition
-                if (self.player.info[9] + self.player.info[10] + self.player.info[8]) < random.randint(0, 150): 
+                if (self.player.info[9] + self.player.info[10] + self.player.info[8]) < random.randint(0, 150):
                     #damage taken depends on players attack and block (and monsters attack and health)
-                    self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11]) 
+                    self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11])
                 #if player isn't dead, the mob is
-                if (not self.player.info[4] <= 0):             
+                if (not self.player.info[4] <= 0):
                     dead += [a]
-        
+
         #all dead mobs are removed from the list
         a = len(dead)
         while a > 0:
             self.mobs.pop(dead[a - 1])
             a -= 1
-            
+
     #tick 4
     def gameObjectAction(self):
         gameObject = self.gameMap[self.player.info[0]][self.player.info[1]].gameObject
@@ -123,6 +123,12 @@ class Game(object):
         if isinstance(gameObject, Item):
             self.player.info[3] += gameObject.attackUp
             self.player.info[4] += gameObject.healthUp
+            self.player.info[5] += gameObject.healingUp
+            self.player.info[6] += gameObject.intelligenceUp
+            self.player.info[7] += gameObject.intuitionUp
+            self.player.info[8] += gameObject.dexterityUp
+            self.player.info[9] += gameObject.agilityUp
+            self.player.info[10] += gameObject.blockUp
 
         # handing over a callback so different LevelEnd-items can behave in different ways
         if isinstance(gameObject, LevelEnd):

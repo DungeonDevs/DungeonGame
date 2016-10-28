@@ -10,11 +10,16 @@ class GameObject():
 #superclass contains shared variables
 #ID starts with 1
 class Item(GameObject):
-    def __init__(self, ID, orientation, isSolid, healthUp, attackUp):
+    def __init__(self, ID, orientation, isSolid, healthUp=0, attackUp=0, healingUp=0, intelligenceUp=0, intuitionUp=0, dexterityUp=0, agilityUp=0, blockUp=0):
         GameObject.__init__(self, ID, orientation, isSolid)
         self.healthUp = healthUp
         self.attackUp = attackUp
-
+        self.healingUp = healingUp
+        self.intelligenceUp = intelligenceUp
+        self.intuitionUp = intuitionUp
+        self.dexterityUp = dexterityUp
+        self.agilityUp = agilityUp
+        self.blockUp = blockUp
 #superclass for all objects that shall interact with the gameMap, the monbs or the player itself and not just with the player stats
 #ID starts with 2
 class Interactable(GameObject):

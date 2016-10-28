@@ -6,7 +6,7 @@ CollectableItems
 #first real item, increases attack by 10
 class Sword(Item):
     def __init__(self):
-        Item.__init__(self, 12, 0, False, 0, 10)
+        Item.__init__(self, 12, 0, False, healthUp=0, attackUp=10)
 class RedSwordOfFire(Item):
     def __init__(self):
         Item.__init__(self, 13, 0, False, 1, 16)
