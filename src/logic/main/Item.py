@@ -15,19 +15,19 @@ class Item(GameObject):
         self.healthUp = healthUp
         self.attackUp = attackUp
 
-#superclass for all obejcts that shall interact with the gameMap, the monbs or the player itself and not just with the player stats
+#superclass for all objects that shall interact with the gameMap, the monbs or the player itself and not just with the player stats
 #ID starts with 2
 class Interactable(GameObject):
     def __init__(self, ID, orientation, isSolid):
-         GameObject.__init__(self, ID, orientation, isSolid)
+        GameObject.__init__(self, ID, orientation, isSolid)
     def interact(self, player, gameMap, mobs):
         print("Interaction triggered! Override for use!")
 
-#superclass for all objetcs that shall end a level (or call another level)
+#superclass for all objects that shall end a level (or call another level)
 #ID starts with 3
 class LevelEnd(GameObject) :
     def __init__(self, ID, isSolid):
-         GameObject.__init__(self, ID, 0, False)
+        GameObject.__init__(self, ID, 0, False)
 
     #call the callback with a specific levelId
     def trigger(self, callback):

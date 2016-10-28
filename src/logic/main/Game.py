@@ -1,12 +1,13 @@
 from src.logic.main.Map import MapHandler
 from src.logic.main.Entity import Player, Monster, IntelligentMonster
 import src.utils.astar as astar
+import random
 from src.logic.main.Engine import Engine, InputHandler
 from src.logic.main.Item import Empty, LevelEnd, Interactable, Item
 #imports for testing only
 from src.logic.objects.GameObjects import Leather, Sword
 from src.logic.objects.Monsters import Hunter
-from src.logic.main.PlayerClass import Knight, Healer
+from src.logic.main.PlayerClass import Knight, Healer, Adventurer, Thief
 #TODO: clean this up, remove test-code
 #main class, contains main-loop
 class Game(object):
@@ -50,7 +51,7 @@ class Game(object):
     #tick 0
     def display(self):
         self.engine.display(self.gameMap, self.player.info, self.mobs)
-    #tick 1 - blocking input Methode
+    #tick 1 - blocking input method
     def playerMove(self):
         inputKey = self.inputHandler.getInput()
         if inputKey == "w":
@@ -82,14 +83,15 @@ class Game(object):
                 self.mobs[a].move(self.gameMap, self.player, self.mobs, self.pathfinding)
                 continue
             self.mobs[a].move(0, True)
-            if self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].getIsSolid() or self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].gameObject.isSolid:
+            if self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].getIsSolid() or self.gameMap[self.mobs[a].info[0]][self.mobs[a].info[1]].gameObject.isSolid or self.player.info[7] > random.randint(0, 100): #basic monsters randomly don't attack you if you are intelligent enough
                 self.mobs[a].move(1, False)
     #tick 3
     def fight(self):
         dead = []
         for a in range(len(self.mobs)):
-            if self.mobs[a].info[0] == self.player.info[0] and self.mobs[a].info[1] == self.player.info[1]:
-                self.player.info[4] -= (self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]
+            if self.mobs[a].info[0] == self.player.info[0] and self.mobs[a].info[1] == self.player.info[1]: #same coordinates
+                if (self.player.info[9] + self.player.info[10] + self.player.info[8]) < random.randint(0, 150): #randomly no damage taken at all, depends on agility, dexterity and intuition
+                    self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11]) # ´damage taken depends on players attack and block
                 if (not self.player.info[4] <= 0):                    
                     dead += [a]
 

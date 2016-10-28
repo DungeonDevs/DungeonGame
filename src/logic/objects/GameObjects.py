@@ -1,5 +1,5 @@
 from src.logic.main.Item import GameObject, Item, Interactable, LevelEnd
-#TODO: Split this file into muliple files (Items, Interactables, Levelchanges etc.)
+#TODO: Split this file into multiple files (Items, Interactables, Levelchanges etc.)
 '''
 CollectableItems
 '''

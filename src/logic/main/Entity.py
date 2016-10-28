@@ -3,7 +3,7 @@ import random
 #superclass for mobs and player, contains shared variables and methods
 class Entity(object):
     def __init__(self, xPos, yPos, orientation, attack, health):
-        self.info = [0,0,0,0,0,0]
+        self.info = [0,0,0,0,0]
         self.info[0] = xPos
         self.info[1] = yPos
         self.info[2] = orientation
@@ -35,18 +35,23 @@ class Entity(object):
     def getPosition(self):
         return self.info[0], self.info[1]
 
-#TODO: implement different playerClasses
 class Player(Entity):
     # orientation from top to left: 0,1,2,3
     def __init__(self, xPos, yPos, orientation, playerClass):
         Entity.__init__(self, xPos, yPos, orientation, playerClass.stats[1], playerClass.stats[2])
-        self.info[5] = playerClass
+        self.info += [playerClass]
+        self.info += [playerClass.stats[3]]
+        self.info += [playerClass.stats[4]]
+        self.info += [playerClass.stats[5]]
+        self.info += [playerClass.stats[6]]
+        self.info += [playerClass.stats[7]]
+        self.info += [playerClass.stats[8]]
 
     #override in subclasses
     def heal(self):
-        if (random.randint(0, self.info[5].stats[2]) - self.info[4]) > 0:
-            self.info[4] += random.randint(0, self.info[5].stats[3])
-        if (self.info[4] > self.info[5].stats[2]):
+        if (random.randint(0, self.info[5].stats[2]) - self.info[4]) > 0: #the more injured you are the more likely you will be healed
+            self.info[4] += random.randint(0, self.info[5].stats[3]) #heals you for a random amount depending on the healing stat
+        if (self.info[4] > self.info[5].stats[2]): #if you got healed over your max HP you are set to max HP
             self.info[4] = self.info[5].stats[2]
 
 '''

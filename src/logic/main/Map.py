@@ -1,7 +1,6 @@
 from src.logic.main.Tile import Ground, Wall
 from src.logic.main.Item import Empty
 from importlib import import_module
-#TODO: see if there's a way to get rid of unused variable message
 #contains useful methods for changing, creating and loading maps
 class MapHandler(object):
     def createMap(self, xSize, ySize):
