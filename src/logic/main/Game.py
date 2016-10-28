@@ -91,8 +91,8 @@ class Game(object):
         for a in range(len(self.mobs)):
             if self.mobs[a].info[0] == self.player.info[0] and self.mobs[a].info[1] == self.player.info[1]: #same coordinates
                 if (self.player.info[9] + self.player.info[10] + self.player.info[8]) < random.randint(0, 150): #randomly no damage taken at all, depends on agility, dexterity and intuition
-                    self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11]) # ´damage taken depends on players attack and block
-                if (not self.player.info[4] <= 0):                    
+                    self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11]) # ï¿½damage taken depends on players attack and block
+                if (not self.player.info[4] <= 0):
                     dead += [a]
 
         #for a in range(len(dead)):
@@ -140,4 +140,4 @@ class Game(object):
 
         self.gameMap, self.mobs, self.player.info[0], self.player.info[1] = MapHandler.loadMap(self.levelID)
         self.mapHandler.createBorders(self.gameMap, len(self.gameMap),len(self.gameMap[0]))
-        self.pathfinding = astar.pathfinder(neighbors=astar.grid_neighbors_custom(len(self.gameMap), len(self.gameMap[0]), self.gameMap), cost=astar.custom_costs(self.gameMap))
+        self.pathfinding = astar.pathfinder(astar.gamemapNeighbors( self.gameMap))
