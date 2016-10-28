@@ -123,12 +123,13 @@ class Game(object):
         if isinstance(gameObject, Item):
             self.player.info[3] += gameObject.attackUp
             self.player.info[4] += gameObject.healthUp
-            self.player.info[5] += gameObject.healingUp
-            self.player.info[6] += gameObject.intelligenceUp
-            self.player.info[7] += gameObject.intuitionUp
-            self.player.info[8] += gameObject.dexterityUp
-            self.player.info[9] += gameObject.agilityUp
-            self.player.info[10] += gameObject.blockUp
+            self.player.info[5].stats[2] += gameObject.healthUp
+            self.player.info[6] += gameObject.healingUp
+            self.player.info[7] += gameObject.intelligenceUp
+            self.player.info[8] += gameObject.intuitionUp
+            self.player.info[9] += gameObject.dexterityUp
+            self.player.info[10] += gameObject.agilityUp
+            self.player.info[11] += gameObject.blockUp
 
         # handing over a callback so different LevelEnd-items can behave in different ways
         if isinstance(gameObject, LevelEnd):
