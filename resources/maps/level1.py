@@ -18,6 +18,12 @@ def getLevel():
     # or add custom code mobs[1].<CustomCode>
 
     #[MobDeclarations]
+    mobs.append(Slime(5,6,0))
+    mobs.append(Slime(4,6,0))
+    mobs.append(Slime(3,6,0))
+    mobs.append(Slime(2,6,0))
+    mobs.append(Slime(4,4,0))
+    mobs.append(Slime(6,5,0))
 
     playerPositionX = 2
     playerPositionY = 1

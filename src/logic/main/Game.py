@@ -96,6 +96,7 @@ class Game(object):
     def fight(self):
         dead = []
         for a in range(len(self.mobs)):
+<<<<<<< HEAD
             #if player and mob are on the same coordinates
             if self.mobs[a].info[0] == self.player.info[0] and self.mobs[a].info[1] == self.player.info[1]: 
                 #randomly no damage taken at all, depends on agility, dexterity and intuition
@@ -104,6 +105,12 @@ class Game(object):
                     self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11]) 
                 #if player isn't dead, the mob is
                 if (not self.player.info[4] <= 0):                    
+=======
+            if self.mobs[a].info[0] == self.player.info[0] and self.mobs[a].info[1] == self.player.info[1]: #same coordinates
+                if (self.player.info[9] + self.player.info[10] + self.player.info[8]) < random.randint(0, 150): #randomly no damage taken at all, depends on agility, dexterity and intuition
+                    self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11]) # �damage taken depends on players attack and block
+                if (not self.player.info[4] <= 0):
+>>>>>>> ab7eb1d1ac93c718b91b126d14e20c0e24f11bea
                     dead += [a]
         
         #all dead mobs are removed from the list
@@ -163,4 +170,4 @@ class Game(object):
 
         self.gameMap, self.mobs, self.player.info[0], self.player.info[1] = MapHandler.loadMap(self.levelID)
         self.mapHandler.createBorders(self.gameMap, len(self.gameMap),len(self.gameMap[0]))
-        self.pathfinding = astar.pathfinder(neighbors=astar.grid_neighbors_custom(len(self.gameMap), len(self.gameMap[0]), self.gameMap), cost=astar.custom_costs(self.gameMap))
+        self.pathfinding = astar.pathfinder(astar.gamemapNeighbors( self.gameMap))

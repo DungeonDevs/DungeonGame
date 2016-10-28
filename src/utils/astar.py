@@ -1,69 +1,55 @@
-
 """
-@author
-The pathfinding module can be used to find the shortest
-path between two points in a graph.
-To use the pathfinder for the default case:
->>> finder = pathfinder()
+This module can be used to find the shortest
+path between two points on a map.
+
+To use the pathfinder first call the method pathfnder with the neighbors of your trust
+(for the game this is gamemapNeighbors)
+>>> finder = pathfinder(gamemapNeighbors)
 >>> finder( (0,0), (1,1) )
 (2, [(0, 0), (0, 1), (1, 1)])
-Or, to customize the pathfinder via passed in functions to handle for your
-particular graph implementation:
->>> finder = pathfinder( distance=absolute_distance,        \\
-...                      cost=fixed_cost(2),                \\
-...                      neighbors=grid_neighbors(10,10) );
->>> finder( (0,0), (2,2) )
-(8, [(0, 0), (0, 1), (1, 1), (1, 2), (2, 2)])
-If a maximum cost is specified, then an empty path will be returned if
-the cost exceeded the specified maximum
->>> finder( (0,0), (2,2), 7 )
-(None, [])
+
+The function can be cutomized via passing in functions to handle  your
+particular implementation:
+>>> finder = pathfinder( distance=absoluteDistance,
+...                      cost=fixedCost(2),
+...                      neighbors=gridNeighbors(10,10) );
+
 """
 
 import math
 
-def manhattan_distance( start, end ):
-    """
-    Calculate the manhattan distance between two points.
-    >>> manhattan_distance( (0,0), (5,5) )
-    10
-    """
+'''
+Calculate the distance between two points using the manhattan formula.
+@param: start - the starting point
+@param: end - the end point
+'''
+def manhattanDistance( start, end ):
     return abs( start[ 0 ] - end[ 0 ] ) + abs( start[ 1 ] + end[ 1 ] )
 
-def absolute_distance( start, end ):
-    """
-    Calculate the distance between two points using the distance formula.
-    >>> absolute_distance( (1,2), (5,5) )
-    5.0
-    """
+'''
+Calculate the distance between two points using simple geometry.
+@param: start - the starting point
+@param: end - the end point
+'''
+def absoluteDistance( start, end ):
     return math.sqrt( ( start[0] - end[0] )**2 + ( start[1] - end[1] )**2 )
 
-def fixed_cost( cost ):
-    """
-    Return a fixed cost for all coordinates in the graph.
-    >>> cost = fixed_cost( 20 )
-    >>> cost( 1, 2 )
-    20
-    >>> cost( 3, 4 )
-    20
-    """
+"""
+Returns a fixed value for every input.
+"""
+def fixedCost( cost ):
     def func( a, b ):
         return cost
     return func
 
-def grid_neighbors( height, width ):
-    """
-    Calculate neighbors for a simple grid where
-    a movement can be made up, down, left, or right.
-    Arguments:
-    height - The height of the grid
-    width - The width of the grid
-    >>> neighbor = grid_neighbors( 10, 10 )
-    >>> neighbor( (0,0) )
-    [(0, 1), (1, 0)]
-    >>> neighbor( (1,1) )
-    [(1, 2), (1, 0), (2, 1), (0, 1)]
-    """
+"""
+Calculates neighbors for a simple grid where
+a movement can be made up, down, left, or right.
+@param: height - The height of the grid
+@param: width - The width of the grid
+"""
+def gridNeighbors( height, width ):
+
     def func( coord ):
         neighbor_list = [ ( coord[ 0 ], coord[ 1 ] + 1),
                           ( coord[ 0 ], coord[ 1 ] - 1),
@@ -76,91 +62,64 @@ def grid_neighbors( height, width ):
                  and c[1] >= 0 and c[1] < height ]
 
     return func
+"""
+Returns a function that return the shortest path between 2 points.
+@param: distance - Callable that returns the estimated distance
+                        between two nodes.
+@param: cost     - Callable that returns the cost to traverse
+                        between two given nodes.
+"""
+def pathfinder( neighbors,
+                distance=absoluteDistance,
+                cost=fixedCost( 1 ) ):
 
-def pathfinder( neighbors=grid_neighbors( 100, 100 ),
-                distance=absolute_distance,
-                cost=fixed_cost( 1 ) ):
-    """
-    Find the shortest distance between two nodes in a graph using the
-    astar algorithm. By default, the graph is a coordinate plane where
-    every node has the same cost and nodes can be traversed horizontally
-    and vertically.
-    Keyword Arguments:
-    neighbor - Callable that takes a node and returns a list
-               of neighboring nodes.
-    distance - Callable that returns the estimated distance
-               between two nodes.
-    cost     - Callable that returns the cost to traverse
-               between two given nodes.
-    """
-
-    def reconstruct_path( came_from, current_node ):
-        """Reconstruct the path from a given node to the beginning"""
-        if current_node in came_from:
-            p = reconstruct_path( came_from, came_from[ current_node ] )
-            p.append( current_node )
+    def reconstructPath( pastPlace, currentPlace ):
+        if currentPlace in pastPlace:
+            p = reconstructPath( pastPlace, pastPlace[ currentPlace ] )
+            p.append( currentPlace )
             return p
         else:
-            return [ current_node ]
+            return [ currentPlace ]
 
-    def func( start, end, max_cost=None ):
-        """
-        Perform a-star pathfinding from a start to an
-        end coordinate.
-        Returns a tuple containing the cost associated with
-        the path, and a list of coordinates in the path
-        This implementation is based on the wikipedia pseudocode, which
-        translated almost directly into python.
-        http://en.wikipedia.org/wiki/A*_search_algorithm
-        """
-        open_set = set( [ start ] )
-        closed_set = set()
-        came_from = {}
+    def func( start, end):
+        openSet = set( [ start ] )
+        closedSet = set()
+        pastPlace = {}
 
-        g_score = { start : 0 }
-        f_score = { start : cost( start, end ) }
+        gScore = { start : 0 }
+        fScore = { start : cost( start, end ) }
 
-        while len( open_set ) != 0:
-            current = min( open_set, key=lambda c: f_score[c] )
-
-            if max_cost != None and g_score[ current ] > max_cost:
-                break
+        while len( openSet ) != 0:
+            current = min( openSet, key=lambda c: fScore[c] )
 
             if current == end:
-                return g_score[ current ], reconstruct_path( came_from, end )
+                return gScore[ current ], reconstructPath( pastPlace, end )
 
-            open_set.discard( current )
-            closed_set.add( current )
+            openSet.discard( current )
+            closedSet.add( current )
             for neighbor in neighbors( current ):
-                tentative_score = g_score[ current ] + cost( current, neighbor )
+                tentativeScore = gScore[ current ] + cost( current, neighbor )
 
-                if neighbor in closed_set and ( neighbor in g_score and tentative_score >= g_score[ neighbor ] ):
+                if neighbor in closedSet and ( neighbor in gScore and tentativeScore >= gScore[ neighbor ] ):
                     continue
 
-                if neighbor not in open_set or ( neighbor in g_score and tentative_score < g_score[ neighbor ] ):
-                    came_from[ neighbor ] = current
-                    g_score[ neighbor ] = tentative_score
-                    f_score[ neighbor ] = tentative_score + distance( neighbor, end )
+                if neighbor not in openSet or ( neighbor in gScore and tentativeScore < gScore[ neighbor ] ):
+                    pastPlace[ neighbor ] = current
+                    gScore[ neighbor ] = tentativeScore
+                    fScore[ neighbor ] = tentativeScore + distance( neighbor, end )
 
-                    if neighbor not in open_set:
-                        open_set.add( neighbor )
+                    if neighbor not in openSet:
+                        openSet.add( neighbor )
 
         return None, []
     return func
-
-#customfunctions extedning the original functionality
-def custom_costs(gameMap):
-    """
-    Return a cost based on whether there is is a wall or not.
-    wall costs are infinit
-    """
-    def func( a, b ):
-        if gameMap[b[0]][b[1]].getIsSolid():
-            return math.inf
-        return 0
-    return func
-
-def grid_neighbors_custom(height, width, gameMap ):
+'''
+A function specificly designed for the game that only sees a field as a neighbor if it is not solid.
+@param: height - te height of the gamemap
+'''
+def gamemapNeighbors( gameMap ):
+        height = len(gameMap[0])
+        width  = len(gameMap)
         def func( coord ):
             neighbor_list = [ ( coord[ 0 ], coord[ 1 ] + 1),
                             ( coord[ 0 ], coord[ 1 ] - 1),

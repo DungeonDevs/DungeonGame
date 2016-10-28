@@ -4,10 +4,10 @@ class Engine(object):
     def __init__(self):
         pass
     def display(self, gameMap, playerInfo, mobs):
-        field = ["" for x in range(10)]
+        field = ["" for x in range(len(gameMap))]
         row = ""
-        for y in range(10):
-            for x in range(10):
+        for y in range(len(gameMap[0])):
+            for x in range(len(gameMap)):
                 row += str(self.info[gameMap[x][y].getTile()])
                 if gameMap[x][y].gameObject.ID != 0:
                     row += str(gameMap[x][y].gameObject.ID)
