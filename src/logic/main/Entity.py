@@ -39,13 +39,13 @@ class Player(Entity):
     # orientation from top to left: 0,1,2,3
     def __init__(self, xPos, yPos, orientation, playerClass):
         Entity.__init__(self, xPos, yPos, orientation, playerClass.stats[1], playerClass.stats[2])
-        self.info += [playerClass]
-        self.info += [playerClass.stats[3]]
-        self.info += [playerClass.stats[4]]
-        self.info += [playerClass.stats[5]]
-        self.info += [playerClass.stats[6]]
-        self.info += [playerClass.stats[7]]
-        self.info += [playerClass.stats[8]]
+        self.info += [playerClass] #used for original stats
+        self.info += [playerClass.stats[3]] #healing
+        self.info += [playerClass.stats[4]] #intelligence
+        self.info += [playerClass.stats[5]] #intuition
+        self.info += [playerClass.stats[6]] #dexterity
+        self.info += [playerClass.stats[7]] #agility
+        self.info += [playerClass.stats[8]] #block
 
     #override in subclasses
     def heal(self):

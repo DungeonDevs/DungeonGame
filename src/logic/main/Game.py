@@ -4,43 +4,50 @@ import src.utils.astar as astar
 import random
 from src.logic.main.Engine import Engine, InputHandler
 from src.logic.main.Item import Empty, LevelEnd, Interactable, Item
+
 #imports for testing only
 from src.logic.objects.GameObjects import Leather, Sword
 from src.logic.objects.Monsters import Hunter
 from src.logic.main.PlayerClass import Knight, Healer, Adventurer, Thief
-#TODO: clean this up, remove test-code
-#main class, contains main-loop
+
+'''
+main class, contains the main loop and the corresponding methods
+'''
 class Game(object):
 
+    #creates the needed engine, inputHandler and mapHandler
     engine = Engine()
     inputHandler = InputHandler()
     mapHandler = MapHandler()
 
-    #gameMap = mapHandler.createMap(10, 10)
-    #gameMap[8][8].setGameObject(Leather())
     levelID = 0 # stores which level is played right now
-    player = Player(1,1,1,Healer())
-    #mobs = [Monster(5,5,0,5,21),Monster(5,5,0,health=5,attack=21),Monster(5,5,0,health=5,attack=21), Hunter(5,5,0,health=2,attack=10,eyesight=100)]
-    pathfinding = None #function to generate paths between tiles
-    running = True
+    levels = 2 #amount of levels there are
+    player = Player(1,1,1,Knight())
+    
+    #function to generate paths between tiles
+    pathfinding = None 
+    #while True the main loop is active
+    running = True 
     gameWon = None
     '''
     @param: hero - the hero to use
     @param: callback - a callback that s called when the game ends. True is handed over if the player won
     '''
-    def __init__(self, hero = None, callback = None):
+    def __init__(self, hero, callback = None):
         # if hero is presented the player is set to hero
         if(not (hero is None)):
-            player = hero
+            self.player = Player(1,1,1,hero)
         self.loadLevel(levelToLoad = 0) # load first level
+        #main loop as long as the game is running
         while self.running:
             self.tick()
-            if(self.running is False):
-                break
+        #when the game has ended
         if(callback):
-            callback(gameWon)
+            print("You won!")
+        else:
+            print("You lost!")
 
-    #called in the main loop
+    #is run every tick of the game
     def tick(self):
         self.display()
         self.playerMove()
@@ -89,17 +96,22 @@ class Game(object):
     def fight(self):
         dead = []
         for a in range(len(self.mobs)):
-            if self.mobs[a].info[0] == self.player.info[0] and self.mobs[a].info[1] == self.player.info[1]: #same coordinates
-                if (self.player.info[9] + self.player.info[10] + self.player.info[8]) < random.randint(0, 150): #randomly no damage taken at all, depends on agility, dexterity and intuition
-                    self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11]) # ´damage taken depends on players attack and block
+            #if player and mob are on the same coordinates
+            if self.mobs[a].info[0] == self.player.info[0] and self.mobs[a].info[1] == self.player.info[1]: 
+                #randomly no damage taken at all, depends on agility, dexterity and intuition
+                if (self.player.info[9] + self.player.info[10] + self.player.info[8]) < random.randint(0, 150): 
+                    #damage taken depends on players attack and block (and monsters attack and health)
+                    self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11]) 
+                #if player isn't dead, the mob is
                 if (not self.player.info[4] <= 0):                    
                     dead += [a]
-
-        #for a in range(len(dead)):
+        
+        #all dead mobs are removed from the list
         a = len(dead)
         while a > 0:
             self.mobs.pop(dead[a - 1])
             a -= 1
+            
     #tick 4
     def gameObjectAction(self):
         gameObject = self.gameMap[self.player.info[0]][self.player.info[1]].gameObject
@@ -113,7 +125,13 @@ class Game(object):
 
         # handing over a callback so different LevelEnd-items can behave in different ways
         if isinstance(gameObject, LevelEnd):
-            gameObject.trigger(self.loadNextLevel)
+            print("Level done!")
+            self.levelID += 1
+            if self.levelID > self.levels:
+                self.callback = True
+                self.running = False
+            else:
+                self.loadLevel(self.levelID)
 
         # handing over a few important objects, so different InteractableObejcts can behave in interesting different ways
         if isinstance(gameObject, Interactable):
@@ -124,19 +142,24 @@ class Game(object):
     #tick 5 last
     def checkHealth(self):
         if self.player.info[4] <= 0:
-                    self.gameWon = False
-                    print("You lost!")
+                    self.callback = False
                     self.running = False
+        '''
+        elif(len(self.mobs) == 0):
+            print("Level done!")
+            self.levelID += 1
+            self.loadLevel(self.levelID)
+        '''
 
-
-    def loadLevel(self, levelToLoad = None, EndGame = False):
-        if(EndGame):
-            self.gameWon = True
-            return
-        if(not levelToLoad is None): # if a levelToLoad is hand over load this level
-             self.levelID = levelToLoad
-        else: # else load the level with the next id
-            self.levelID = self.levelID + 1
+    #loads the current level
+    def loadLevel(self, levelToLoad = None):
+        #if(EndGame):
+        #    self.gameWon = True
+        #    return
+        #if(not levelToLoad is None): # if a levelToLoad is hand over load this level
+        self.levelID = levelToLoad
+        #else: # else load the level with the next id
+        #    self.levelID = self.levelID + 1
 
         self.gameMap, self.mobs, self.player.info[0], self.player.info[1] = MapHandler.loadMap(self.levelID)
         self.mapHandler.createBorders(self.gameMap, len(self.gameMap),len(self.gameMap[0]))

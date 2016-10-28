@@ -26,12 +26,12 @@ class Interactable(GameObject):
 #superclass for all objects that shall end a level (or call another level)
 #ID starts with 3
 class LevelEnd(GameObject) :
-    def __init__(self, ID, isSolid):
+    def __init__(self, ID = 999, isSolid = False):
         GameObject.__init__(self, ID, 0, False)
 
     #call the callback with a specific levelId
-    def trigger(self, callback):
-        print("LevelEnd triggered! Override for use!")
+    #def trigger(self, callback):
+    #    print("LevelEnd triggered! Override for use!")
 
 '''
 MetaItems

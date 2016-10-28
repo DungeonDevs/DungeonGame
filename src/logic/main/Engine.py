@@ -29,7 +29,7 @@ class Engine(object):
         for y in range(10):
             print(field[y])
         #print("Health: " + str(playerInfo[4])+ "/" + str(playerInfo[5].stats[2]) + " Attack: " + str(playerInfo[3]) + " Healing: " + str(playerInfo[5].stats[3]))
-        print(playerInfo[0:5] +playerInfo[6:12])
+        print(playerInfo[0:5] + playerInfo[6:12])
 
 class InputHandler(object):
     def getInput(self):

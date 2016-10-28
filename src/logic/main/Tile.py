@@ -1,5 +1,5 @@
 from src.logic.main.Item import Empty
-#TODO: clean this up, getters and setters
+
 #Tile superclass contains needed variables and methods for all tiles
 class Tile(object):
     def __init__(self, isSolid, gameObject):

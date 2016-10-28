@@ -11,19 +11,13 @@ def getLevel():
     # or add custom code gameMap[<X>][<Y>].gameObject.<CustomCode>
 
     #[ObjectDeclarations]
-    gameMap[5][5].setGameObject(LevelEnd())
+    gameMap[5][5].setGameObject(Sword())
     mobs = []
     # [MobDeclarations] is replaced with declarations following the style:  mobs.append(<Mobname>()).
     # in edge cases you can add special Arguments mobs.append(<Mobname>(*<Arguments>))
     # or add custom code mobs[1].<CustomCode>
 
     #[MobDeclarations]
-    mobs.append(Hunter(5,6,0))
-    mobs.append(Hunter(4,6,0))
-    mobs.append(Hunter(3,6,0))
-    mobs.append(Hunter(2,6,0))
-    mobs.append(Hunter(4,4,0))
-    mobs.append(Hunter(6,5,0))
 
     playerPositionX = 2
     playerPositionY = 1

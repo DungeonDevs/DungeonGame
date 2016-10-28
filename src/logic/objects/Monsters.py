@@ -30,9 +30,9 @@ class Hunter(IntelligentMonster):
 class Slime(Monster):
     
     def __init__(self, xPos, yPos, orientation):
-        Monster.__init__(xPos, yPos, orientation, attack = 5, health = 10, ID = 1)
+        Monster.__init__(self, xPos, yPos, orientation, attack = 5, health = 10, ID = 1)
         
     def move(self, direction, turn):
         Monster.move(self, direction, turn)
-        if random.randint(100) > 75:
-            self.info[4] += random.randint(7)
+        if random.randint(0,100) > 75:
+            self.info[4] += random.randint(0,10)
