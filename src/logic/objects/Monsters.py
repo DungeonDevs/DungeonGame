@@ -18,7 +18,8 @@ class Hunter(IntelligentMonster):
             pass
         else: #use pathfinding to move towards the player
             pathLength, path = pathfinder((self.info[0], self.info[1]), (player.info[0], player.info[1]))
-            self.info[0], self.info[1] = path[1]
+            if(pathLength >1):
+                self.info[0], self.info[1] = path[1]
 
     #checks whether the target entity is in range.
     def inRange(self, target):
@@ -26,12 +27,12 @@ class Hunter(IntelligentMonster):
          target.info[0] -self.eyesight <= self.info[0] and
           target.info[1]  +self.eyesight >= self.info[1] and
            target.info[1]  -self.eyesight <= self.info[1])
-        
+
 class Slime(Monster):
-    
+
     def __init__(self, xPos, yPos, orientation):
         Monster.__init__(self, xPos, yPos, orientation, attack = 5, health = 10, ID = 1)
-        
+
     def move(self, direction, turn):
         Monster.move(self, direction, turn)
         if random.randint(0,100) > 75:

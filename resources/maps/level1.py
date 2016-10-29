@@ -1,30 +1,126 @@
 from src.logic.main.Map import *
-from src.logic.objects.GameObjects import *
-from src.logic.objects.Monsters import *
+from src.logic.objects import GameObjects, Monsters
 def getLevel():
-    size = [10,10]
+    size = [<width>,<height>]
     mapHandler = MapHandler()
     gameMap = mapHandler.createMap(*size)
 
-    # [ObjectDeclarations] is replaced with declarations following the style:  gameMap[<X>][<Y>].setGameObject(<ObjectName>()).
+    gameMap[0][0] = Ground()
+    gameMap[0][1] = Ground()
+    gameMap[0][2] = Ground()
+    gameMap[0][3] = Ground()
+    gameMap[0][4] = Ground()
+    gameMap[0][5] = Ground()
+    gameMap[0][6] = Ground()
+    gameMap[0][7] = Ground()
+    gameMap[0][8] = Ground()
+    gameMap[0][9] = Ground()
+    gameMap[1][0] = Ground()
+    gameMap[1][1] = Ground()
+    gameMap[1][2] = Ground()
+    gameMap[1][3] = Ground()
+    gameMap[1][4] = Ground()
+    gameMap[1][5] = Ground()
+    gameMap[1][6] = Ground()
+    gameMap[1][7] = Ground()
+    gameMap[1][8] = Ground()
+    gameMap[1][9] = Ground()
+    gameMap[2][0] = Ground()
+    gameMap[2][1] = Ground()
+    gameMap[2][2] = Ground()
+    gameMap[2][3] = Ground()
+    gameMap[2][4] = Ground()
+    gameMap[2][5] = Ground()
+    gameMap[2][6] = Ground()
+    gameMap[2][7] = Ground()
+    gameMap[2][8] = Ground()
+    gameMap[2][9] = Ground()
+    gameMap[3][0] = Ground()
+    gameMap[3][1] = Ground()
+    gameMap[3][2] = Ground()
+    gameMap[3][3] = Ground()
+    gameMap[3][4] = Ground()
+    gameMap[3][5] = Ground()
+    gameMap[3][6] = Ground()
+    gameMap[3][7] = Ground()
+    gameMap[3][8] = Ground()
+    gameMap[3][9] = Ground()
+    gameMap[4][0] = Ground()
+    gameMap[4][1] = Ground()
+    gameMap[4][2] = Ground()
+    gameMap[4][3] = Ground()
+    gameMap[4][4] = Ground()
+    gameMap[4][5] = Ground()
+    gameMap[4][6] = Ground()
+    gameMap[4][7] = Ground()
+    gameMap[4][8] = Ground()
+    gameMap[4][9] = Ground()
+    gameMap[5][0] = Ground()
+    gameMap[5][1] = Ground()
+    gameMap[5][2] = Ground()
+    gameMap[5][3] = Ground()
+    gameMap[5][4] = Ground()
+    gameMap[5][5] = Ground()
+    gameMap[5][6] = Ground()
+    gameMap[5][7] = Ground()
+    gameMap[5][8] = Ground()
+    gameMap[5][9] = Ground()
+    gameMap[6][0] = Ground()
+    gameMap[6][1] = Ground()
+    gameMap[6][2] = Ground()
+    gameMap[6][3] = Ground()
+    gameMap[6][4] = Ground()
+    gameMap[6][5] = Ground()
+    gameMap[6][6] = Ground()
+    gameMap[6][7] = Ground()
+    gameMap[6][8] = Ground()
+    gameMap[6][9] = Ground()
+    gameMap[7][0] = Ground()
+    gameMap[7][1] = Ground()
+    gameMap[7][2] = Ground()
+    gameMap[7][3] = Ground()
+    gameMap[7][4] = Ground()
+    gameMap[7][5] = Ground()
+    gameMap[7][6] = Ground()
+    gameMap[7][7] = Ground()
+    gameMap[7][8] = Ground()
+    gameMap[7][9] = Ground()
+    gameMap[8][0] = Ground()
+    gameMap[8][1] = Ground()
+    gameMap[8][2] = Ground()
+    gameMap[8][3] = Ground()
+    gameMap[8][4] = Ground()
+    gameMap[8][5] = Ground()
+    gameMap[8][6] = Ground()
+    gameMap[8][7] = Ground()
+    gameMap[8][8] = Ground()
+    gameMap[8][9] = Ground()
+    gameMap[9][0] = Ground()
+    gameMap[9][1] = Ground()
+    gameMap[9][2] = Ground()
+    gameMap[9][3] = Ground()
+    gameMap[9][4] = Ground()
+    gameMap[9][5] = Ground()
+    gameMap[9][6] = Ground()
+    gameMap[9][7] = Ground()
+    gameMap[9][8] = Ground()
+    gameMap[9][9] = Ground()
+    
+
+    # ObjectDeclarations is replaced with declarations following the style:  gameMap[<X>][<Y>].setGameObject(<ObjectName>()).
     # in edge cases you can add special Arguments gameMap[<X>][<Y>].setGameObject(<ObjectName>(*<Arguments>))
     # or add custom code gameMap[<X>][<Y>].gameObject.<CustomCode>
-
-    #[ObjectDeclarations]
-    gameMap[5][5].setGameObject(Sword())
+    
     mobs = []
-    # [MobDeclarations] is replaced with declarations following the style:  mobs.append(<Mobname>()).
+    # MobDeclarations is replaced with declarations following the style:  mobs.append(<Mobname>()).
     # in edge cases you can add special Arguments mobs.append(<Mobname>(*<Arguments>))
-    # or add custom code mobs[1].<CustomCode>
+    # or add custom code mobs[-1].<CustomCode>
+    mobs.append(Slime(3, 6))
+    mobs[-1].
+    mobs.append(Hunter(4, 6,eyesight=5,attack=2,health=10))
+    mobs[-1].
+    
 
-    #[MobDeclarations]
-    mobs.append(Slime(5,6,0))
-    mobs.append(Slime(4,6,0))
-    mobs.append(Slime(3,6,0))
-    mobs.append(Slime(2,6,0))
-    mobs.append(Slime(4,4,0))
-    mobs.append(Slime(6,5,0))
-
-    playerPositionX = 2
-    playerPositionY = 1
+    playerPositionX = 0
+    playerPositionY = 0
     return gameMap, mobs, playerPositionX, playerPositionY
