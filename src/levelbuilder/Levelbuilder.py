@@ -1,14 +1,24 @@
 from tkinter import *
 from tkinter.filedialog import *
-from tkinter.simpledialog import Dialog
 from src.logic.main.Map import *
 from src.logic.objects.Monsters import *
+import src.logic.objects.GameObjects as gameObjectsModule
 import threading
 import os
-
+import sys, inspect
+'''
+A tkinter gui to create maps for the game.
+The programm exports to a simple .py file so every export can be edited afterwards by hand.
+To create a new Level simply call Levelbuilder() with the wanted width and height.
+>>> Levelbuilder(10,20)
+'''
 class Levelbuilder():
     def __init__(self,width, height):
-        self.GameObjects = ["Empty","Sword"] # A list of all possible GameObjects
+        self.GameObjects = ["Empty"] + [i[0] for i in inspect.getmembers(gameObjectsModule, inspect.isclass)]#["Empty","Sword"] # A list of all possible GameObjects #TODO
+        self.GameObjects.remove("GameObject")
+        self.GameObjects.remove("Interactable")
+        self.GameObjects.remove("Item")
+        self.GameObjects.remove("LevelEnd")
         self.Mobs = ["Monster","Hunter"] # A list of all possible GameObjects
         self.Objects =[]
         self.mobs = []
@@ -30,7 +40,7 @@ class Levelbuilder():
                 f = Frame(self.map, height=32, width=32)
                 f.pack_propagate(0) # don't shrink
                 f.grid(row=yCo, column=xCo)
-                self.buttonMap[xCo][yCo] = Button(f, command = self.getFunction(xCo,yCo), height=2, width = 2)
+                self.buttonMap[xCo][yCo] = Button(f, command = self.getSettingsFunction(xCo,yCo), height=2, width = 2)
                 self.buttonMap[xCo][yCo].bind('<Button-3>', lambda event,xVal=xCo, yVal=yCo: self.setWall(xVal,yVal)) #self.getFunctionSetWall(xCo,yCo))
                 self.buttonMap[xCo][yCo].pack(fill=BOTH, expand=1)
                 #self.buttonMap[xCo][yCo].grid(row=yCo, column=xCo)
@@ -62,36 +72,36 @@ class Levelbuilder():
         #Menubar
         self.menubar = Menu(self.window)
         self.menubar.add_command(label="save", command=self.save)
-        self.menubar.add_command(label="Quit!", command=self.window.quit)
+        self.menubar.add_command(label="quit", command=self.window.quit)
         self.window.config(menu=self.menubar)
 
         self.window.mainloop()
+
     def setWall(self, xCo, yCo):
-        #def function():
         self.gameMap[xCo][yCo].isSolid = not self.gameMap[xCo][yCo].isSolid
         self.updateMap()
-        #return function
 
-    def getFunction(self,xCo, yCo):
+    #returns a function oppening the settings for the desired coordinates
+    def getSettingsFunction(self,xCo, yCo):
         def function():
             self.openSettings(xCo,yCo)
         return function
 
     def openSettings(self, x, y):
-        print("open settings")
         self.settings.destroy()
         self.settings = Frame(self.window)
         self.settings.grid(row=0, column=1, sticky=E)
         if(self.display.get() == 0):
             def okButtonFunction():
-                self.selectedObject[0] = self.settings.name.get()
-                self.selectedObject[3] = [cuco.get() for cuco in self.settings.cuCoInput]
-                self.setGameObjectAt(x,y, self.selectedObject[0], self.selectedObject[3])
+                self.settings.selectedObject[0] = self.settings.name.get()
+                if(not self.settings.selected):
+                    return
+                self.settings.selectedObject[3] = [cuco.get() for cuco in self.settings.cuCoInput]
+                self.setGameObjectAt(x,y, self.settings.selectedObject[0], self.settings.selectedObject[3])
                 self.cleanGameObjectsList()
                 self.updateMap()
             def selectButtonFunction():
-                if(self.settings.name.get() == "Empty"):
-                    return
+                self.settings.selected = True
                 '''
                 def addArgsInput():
                     self.settings.argsInput.append( Entry(self.settings.ParameterInput))
@@ -125,23 +135,23 @@ class Levelbuilder():
                 self.settings.addCuCoButton.grid(row=0,column=1)
                 self.settings.removeCuCoButton = Button(self.settings.CuCoInput, text="-", command=removeCuCoInput)
                 self.settings.removeCuCoButton.grid(row=0,column=2)
-                for cuco in self.selectedObject[3]:
+                for cuco in self.settings.selectedObject[3]:
                     self.settings.cuCoInput[-1].insert(0, cuco)
-                    if(cuco != self.selectedObject[3][-1]):
+                    if(cuco != self.settings.selectedObject[3][-1]):
                         addCuCoInput()
-
+            self.settings.selected = False
             self.settings.ParameterInput = Frame(self.settings)
             self.settings.ParameterInput.grid(row = 2)
             self.settings.CuCoInput = Frame(self.settings)
             self.settings.CuCoInput.grid(row = 2,column=1)
-            self.selectedObject = self.getGameObjectAt(x,y)
-            if(self.selectedObject is None):
-                self.selectedObject = ["Empty",x,y,[]]
+            self.settings.selectedObject = self.getGameObjectAt(x,y)
+            if(self.settings.selectedObject is None):
+                self.settings.selectedObject = ["Empty",x,y,[]]
                 self.settings.containing = False
             else:
                 self.settings.containing = True
             self.settings.name = StringVar()
-            self.settings.name.set(self.selectedObject[0])
+            self.settings.name.set(self.settings.selectedObject[0])
             self.settings.description = Label(self.settings,text='Choose an Object', font=('Arial',10))
             self.settings.description.grid(row=0)
             self.settings.dropdown_Object = OptionMenu(self.settings, self.settings.name,*self.GameObjects)
@@ -193,20 +203,24 @@ class Levelbuilder():
         if self.display.get() == 0:
             for gO in self.Objects:
                 try:
-                    self.buttonMap[gO[1]][gO[2]].image = PhotoImage(file="resources/" + gO[0]+"default.png")
+                    self.buttonMap[gO[1]][gO[2]].image = PhotoImage(file="../../resources/" + gO[0]+"default.png")
                     self.buttonMap[gO[1]][gO[2]].config(image=self.buttonMap[gO[1]][gO[2]].image)
                 except Exception:
-                    self.buttonMap[gO[1]][gO[2]].config(text="G")
+                    self.buttonMap[gO[1]][gO[2]].config(text=gO[0][0])
         else:
             for mob in self.mobs:
                 try:
-                    self.buttonMap[mob[1]][mob[2]].image = PhotoImage(file="resources/" + mob[0]+".png")
+                    self.buttonMap[mob[1]][mob[2]].image = PhotoImage(file="../../resources/" + mob[0]+".png")
                     self.buttonMap[mob[1]][mob[2]].config(image=self.buttonMap[mob[1]][mob[2]].image)
                 except Exception:
                     self.buttonMap[mob[1]][mob[2]].config(text="M")
+    '''
+    saves the edited map to the selected file by replacing [WallDeclarations], [ObjectDeclarations] and [MobDeclarations]
+    '''
     def save(self):
-        path = asksaveasfilename()
+        path = asksaveasfilename() #asks for a filepath
         print(path)
+        #prepares Tiles
         resultMap = ""
         xCo = 0
         yCo = 0
@@ -219,14 +233,15 @@ class Levelbuilder():
                 yCo = yCo + 1
             yCo = 0
             xCo = xCo + 1
-        #Items and other Gameobjects
+
+        #prepares items and other gameobjects
         resultObjects =  ""
         for gO in self.Objects:
             resultObjects += "gameMap["+str(gO[1])+"]["+str(gO[2])+"].setGameObject("+str(gO[0])+"())\n"
             if not (gO[3] is None):
                 for CustomCode in gO[3]:
                     resultObjects +="gameMap["+str(gO[1])+"]["+str(gO[2])+"].gameObject."+str(CustomCode)+"\n"
-        #mobs
+        #prepares Mobs
         resultMobs = ""
         for mob in self.mobs:
             if(mob[4] is None): # if there are no special arguments
@@ -237,10 +252,10 @@ class Levelbuilder():
                 for CustomCode in go[2]:
                     resultMobs += "mobs[-1]."+str(CustomCode)+"\n"
 
-        template = open('resources/maps/levelTemplate.py', 'r').read()
+        template = open('../../resources/maps/levelTemplate.py', 'r').read() #opens the templete file
         updatedFile = template.split("[WallDeclarations]")[0]+ resultMap.replace("\n", "\n    ") + template.split("[WallDeclarations]")[1]
         updatedFile = updatedFile.split("[ObjectDeclarations]")[0]+ resultObjects.replace("\n", "\n    ") + updatedFile.split("[ObjectDeclarations]")[1]
         updatedFile = updatedFile.split("[MobDeclarations]")[0] + resultMobs.replace("\n", "\n    ") + updatedFile.split("[MobDeclarations]")[1]
-        open(path,"w").write(updatedFile)
+        open(path,"w").write(updatedFile) #writes the edited file to filesystem
 
-level = Levelbuilder(20,10)
+#level = Levelbuilder(20,10)#starts a Levelbuilder
