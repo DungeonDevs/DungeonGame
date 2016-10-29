@@ -43,9 +43,7 @@ class Game(object):
             self.tick()
         #when the game has ended
         if(callback):
-            print("You won!")
-        else:
-            print("You lost!")
+            callback(self.gameWon)
 
     #is run every tick of the game
     def tick(self):
@@ -86,7 +84,7 @@ class Game(object):
         for a in range(len(self.mobs)):
             #intelligent monsters behave another way
             if isinstance(self.mobs[a], IntelligentMonster):
-                print(self.mobs[a].info)
+                #print(self.mobs[a].info)
                 self.mobs[a].move(self.gameMap, self.player, self.mobs, self.pathfinding)
                 continue
             self.mobs[a].move(0, True)
@@ -136,10 +134,15 @@ class Game(object):
             print("Level done!")
             self.levelID += 1
             if self.levelID > self.levels:
-                self.callback = True
+                self.gameWon = True
                 self.running = False
             else:
-                self.loadLevel(self.levelID)
+                try:
+                    self.loadLevel(levelToLoad=self.levelID)
+                except Exception as e:
+                    print(e)
+                    self.gameWon = True
+                    self.running = False
 
         # handing over a few important objects, so different InteractableObejcts can behave in interesting different ways
         if isinstance(gameObject, Interactable):
@@ -150,13 +153,13 @@ class Game(object):
     #tick 5 last
     def checkHealth(self):
         if self.player.info[4] <= 0:
-                    self.callback = False
+                    self.gameWon = False
                     self.running = False
         '''
         elif(len(self.mobs) == 0):
             print("Level done!")
             self.levelID += 1
-            self.loadLevel(self.levelID)
+            self.loadLevel(levelToLoad=self.levelID)
         '''
 
     #loads the current level
@@ -171,4 +174,4 @@ class Game(object):
 
         self.gameMap, self.mobs, self.player.info[0], self.player.info[1] = MapHandler.loadMap(self.levelID)
         self.mapHandler.createBorders(self.gameMap, len(self.gameMap),len(self.gameMap[0]))
-        self.pathfinding = astar.pathfinder(astar.gamemapNeighbors( self.gameMap))
+        self.pathfinding = astar.pathfinder(astar.gamemapNeighbors(self.gameMap))

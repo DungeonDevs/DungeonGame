@@ -2,7 +2,7 @@ from src.logic.main.Map import *
 from src.logic.objects.GameObjects import *
 from src.logic.objects.Monsters import *
 def getLevel():
-    size = [10,10]
+    size = [10,15]
     mapHandler = MapHandler()
     gameMap = mapHandler.createMap(*size)
 

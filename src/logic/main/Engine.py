@@ -4,7 +4,7 @@ class Engine(object):
     def __init__(self):
         pass
     def display(self, gameMap, playerInfo, mobs):
-        field = ["" for x in range(len(gameMap))]
+        field = ["" for x in range(len(gameMap[0]))]
         row = ""
         for y in range(len(gameMap[0])):
             for x in range(len(gameMap)):
@@ -13,7 +13,6 @@ class Engine(object):
                     row += str(gameMap[x][y].gameObject.ID)
                 else:
                     row += " "
-
             field[y] = row
             row = ""
 
@@ -26,7 +25,7 @@ class Engine(object):
             replace = replace[0: 2 * mobs[a].info[0]] + "M " + replace[2 * (mobs[a].info[0] + 1): -1] + " "
             field[mobs[a].info[1]] = replace
 
-        for y in range(10):
+        for y in range(len(gameMap[0])):
             print(field[y])
         #print("Health: " + str(playerInfo[4])+ "/" + str(playerInfo[5].stats[2]) + " Attack: " + str(playerInfo[3]) + " Healing: " + str(playerInfo[5].stats[3]))
         print(playerInfo[0:5] + playerInfo[6:12])

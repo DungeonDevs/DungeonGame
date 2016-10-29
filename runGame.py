@@ -1,2 +1,2 @@
-from src.logic.main.Game import Game
-game = Game()
+from src.logic.main.Launcher import Launcher
+l = Launcher()

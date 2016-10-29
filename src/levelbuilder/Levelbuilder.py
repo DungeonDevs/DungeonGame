@@ -7,25 +7,35 @@ import src.logic.objects.GameObjects as GameObjectsModule
 import threading
 import os
 import sys, inspect
-'''
-A tkinter gui to create maps for the game.
-The programm exports to a simple .py file so every export can be edited afterwards by hand.
-To create a new Level simply call Levelbuilder() with the wanted width and height.
->>> Levelbuilder(10,20)
-'''
-def get_default_parameter(func):
-    """
-    returns a dictionary of arg_name:default_values for the input function
-    """
+
+"""
+returns a dictionary of argName:defaultValues for the input function
+"""
+def getDefaultParameter(func):
     try:
         parameter, varparameter, keywords, defaults = inspect.getargspec(func)
         return dict(zip(parameter[-len(defaults):], defaults))
     except TypeError as tp:
         return {}
+'''
+A tkinter gui to create maps for the game.
+The programm exports to a simple .py file so every export can be edited afterwards by hand.
+To create a new Level simply call Levelbuilder() with the wanted width and height.
+>>> Levelbuilder(10,20)
+In the menu on the top of the window can be selected what is edited.
+-> Gameobject Mode
+    -> leftclick a button to open the gameobjectsettings menu
+-> Mob Mode
+    -> leftclick a button to open the mobsettings menu
+-> Wall Mode
+    -> leftclick a button to change this tiles solid state
 
-
+you can set the playerposition (marked with P) by doublerightclicking a tile
+you can always set a tiles solid state by rightclicking the tile
+'''
 class Levelbuilder():
     def __init__(self,width, height):
+        #prepare datastructure
         self.possibleGameObjects = ["Empty"] + [i[0] for i in inspect.getmembers(GameObjectsModule, inspect.isclass)]# A list of all possible GameObjects)
         excludes = ["GameObject","Interactable","Item","LevelEnd"]
         self.possibleGameObjects = [x for x in self.possibleGameObjects if x not in excludes]
@@ -34,31 +44,32 @@ class Levelbuilder():
         self.playerposition =(0,0)
         self.GameObjects =[]
         self.Mobs = []
+        #prepare window
         self.window = Tk()
         self.window.title('Levelbuilder')
         self.window.minsize(600,400)
         self.window.maxsize(1280,720)
-        #PrepareMap
+
+        #prepare map
+        if height > 20:
+            height = 20
+        if width > 32:
+            width = 32
         self.map = Frame(self.window)
         self.map.grid(row=0, column=0)
         self.gameMap = MapHandler().createMap(width,height)
-
         self.buttonMap = [[None for _ in range(width)] for _ in range(height)]
-        xCo = 0
-        yCo = 0
-        for x in self.gameMap:
-            yCo = 0
-            for y in x:
+        for y in range(len(self.gameMap)):
+            for x in range(len(self.gameMap[0])):
                 f = Frame(self.map, height=32, width=32)
                 f.pack_propagate(0) # don't shrink
-                f.grid(row=yCo, column=xCo)
-                self.buttonMap[xCo][yCo] = Button(f, command = self.getHandelerFunction(xCo,yCo), height=2, width = 2)
-                self.buttonMap[xCo][yCo].bind('<Button-3>', lambda event,xVal=xCo, yVal=yCo: self.setWall(xVal,yVal))
-                self.buttonMap[xCo][yCo].bind('<Button-2>', lambda event,xVal=xCo, yVal=yCo: self.setPlayer(xVal,yVal))
-                self.buttonMap[xCo][yCo].pack(fill=BOTH, expand=1)
-                yCo = yCo + 1
-            xCo = xCo + 1
-        #PrepareSettings
+                f.grid(row=x, column=y)
+                self.buttonMap[y][x] = Button(f, command = self.getHandelerFunction(y,x), height=2, width = 2)
+                self.buttonMap[y][x].bind('<Button-3>', lambda event,y=y, x=x: self.setWall(y,x))
+                self.buttonMap[y][x].bind('<Double-Button-3>', lambda event,y=y, x=x: (self.setPlayer(y,x),self.setWall(y,x)))
+                self.buttonMap[y][x].pack(fill=BOTH, expand=1)
+
+        #prepare settings
         self.settings = Frame(self.window)
         self.settings.grid(row=0, column=1, sticky=E)
         #select what to show
@@ -66,33 +77,45 @@ class Levelbuilder():
         self.updateMap()
         #Menubar
         self.menubar = Menu(self.window)
-        self.menubar.add_command(label="save", command=self.save)
         self.menubar.add_command(label="quit", command=self.window.quit)
-        self.menubar.add_command(label="gameobjects", command= lambda : self.setMode(0))
-        self.menubar.add_command(label="mobs", command= lambda : self.setMode(1))
+        self.menubar.add_command(label="export", command=self.export)
+        self.menubar.add_command(label="Gameobject Mode", command= lambda : self.setMode(0))
+        self.menubar.add_command(label="Mob Mode", command= lambda : self.setMode(1))
+        self.menubar.add_command(label="Wall Mode", command= lambda : self.setMode(2))
         self.window.config(menu=self.menubar)
+
         self.window.mainloop()
+
+    #calls the method set as handeler with the parameter x and y
     def handelClick(self,x,y):
         self.handeler(x,y)
-        pass
+
+    #changes a tiles solid state
     def setWall(self, xCo, yCo):
         self.gameMap[xCo][yCo].isSolid = not self.gameMap[xCo][yCo].isSolid
         self.updateMap()
 
+    #sets the mode
     def setMode(self, mode):
         self.mode = mode
         if(self.mode ==0):
             self.handeler = self.openGameObjectSettings
+            self.settings.destroy()
+            self.handelClick(0,0)
         elif(self.mode ==1):
             self.handeler = self.openMobSettings
-        self.settings.destroy()
-        self.handelClick(0,0)
+            self.settings.destroy()
+            self.handelClick(0,0)
+        elif(self.mode ==2):
+            self.handeler = self.setWall
+            self.settings.destroy()
         self.updateMap()
 
     def setPlayer(self, xCo, yCo):
         self.playerposition = (xCo,yCo)
         self.updateMap()
-    #returns a function oppening the settings for the desired coordinates
+
+    #returns a function handeling a click at the coordinates x and y
     def getHandelerFunction(self,xCo, yCo):
         def function():
             self.handelClick(xCo,yCo)
@@ -101,7 +124,7 @@ class Levelbuilder():
     def openGameObjectSettings(self, x, y):
         self.settings.destroy()
         self.settings = Frame(self.window)
-        self.settings.grid(row=0, column=1, sticky=E)
+        self.settings.grid(row=0, column=1, sticky=NW)
         def okButtonFunction():
             self.settings.selectedObject[0] = self.settings.name.get()
             if(not self.settings.selected):
@@ -118,6 +141,8 @@ class Levelbuilder():
             self.settings.selected = True
             #CustomCOde
             def addCuCoInput():
+                if(len(self.settings.cuCoInput) > 7):
+                    return
                 self.settings.cuCoInput.append( Entry(self.settings.CuCoInput))
                 self.settings.cuCoInput[-1].grid(row=len(self.settings.cuCoInput)+1,columnspan=3)
             def removeCuCoInput():
@@ -137,22 +162,24 @@ class Levelbuilder():
                     addCuCoInput()
 
         self.settings.selected = False
-        self.settings.ParameterInput = Frame(self.settings)
-        self.settings.ParameterInput.grid(row = 2)
+        #self.settings.ParameterInput = Frame(self.settings)
+        #self.settings.ParameterInput.grid(row = 3)
         self.settings.CuCoInput = Frame(self.settings)
-        self.settings.CuCoInput.grid(row = 2,column=1)
+        self.settings.CuCoInput.grid(row = 3,column=1)
         self.settings.selectedObject = self.getGameObjectAt(x,y)
         if(self.settings.selectedObject is None):
             self.settings.selectedObject = ["Empty",x,y,[]]
             self.settings.containing = False
         else:
             self.settings.containing = True
+        self.settings.header = Label(self.settings,text="Editing the field: (" + str(x) + "|"+str(y)+")")
+        self.settings.header.grid(row=0,sticky=NW)
+        self.settings.description = Label(self.settings,text='Choose an Object')
+        self.settings.description.grid(row=1,sticky=W)
         self.settings.name = StringVar()
         self.settings.name.set(self.settings.selectedObject[0])
-        self.settings.description = Label(self.settings,text='Choose an Object')
-        self.settings.description.grid(row=0)
         self.settings.dropdown_Object = OptionMenu(self.settings, self.settings.name,*self.possibleGameObjects,command=selectButtonFunction)
-        self.settings.dropdown_Object.grid(row=1, column=0)
+        self.settings.dropdown_Object.grid(row=2, column=0, sticky=W)
         self.settings.okButton = Button(self.settings, text="save", command=okButtonFunction)
         self.settings.okButton.grid(sticky=SW)
         if(self.settings.containing is True):
@@ -161,7 +188,7 @@ class Levelbuilder():
     def openMobSettings(self, x, y):
         self.settings.destroy()
         self.settings = Frame(self.window)
-        self.settings.grid(row=0, column=1, sticky=E)
+        self.settings.grid(row=0, column=1, sticky=NW)
         def okButtonFunction():
             if(not self.settings.selected):
                 return
@@ -179,7 +206,7 @@ class Levelbuilder():
             self.settings.selectedMob[0] = self.settings.name.get()
             self.settings.parameterLabels = []
             self.settings.parameterInputFields = []
-            defaults = get_default_parameter(eval(self.settings.selectedMob[0]))
+            defaults = getDefaultParameter(eval(self.settings.selectedMob[0]))
             if(not defaults == {}): #if there are no defaultarguments return and do not offer this menu
                 for key in defaults:
                     self.settings.parameterLabels.append(Label(self.settings.ParameterInput,text=key))
@@ -190,9 +217,11 @@ class Levelbuilder():
                     print(key)
                 #HeaderArguments
                 self.settings.parameterInputHeader= Label(self.settings.ParameterInput,text='Arguments')
-                self.settings.parameterInputHeader.grid(row=0,column = 0)
+                self.settings.parameterInputHeader.grid(row=0,column = 0,columnspan=2)
             #CustomCode
             def addCuCoInput():
+                if(len(self.settings.cuCoInput) > 7):
+                    return
                 self.settings.cuCoInput.append( Entry(self.settings.CuCoInput))
                 self.settings.cuCoInput[-1].grid(row=len(self.settings.cuCoInput)+1,columnspan=3)
             def removeCuCoInput():
@@ -200,7 +229,7 @@ class Levelbuilder():
                 del self.settings.cuCoInput[-1]
             self.settings.cuCoInput = []
             addCuCoInput()
-            #HeaderArguments
+
             self.settings.cuCoInputHeader= Label(self.settings.CuCoInput,text='CustomCode')
             self.settings.cuCoInputHeader.grid(row=0,column = 0)
             self.settings.addCuCoButton = Button(self.settings.CuCoInput, text="+", command=addCuCoInput)
@@ -213,21 +242,24 @@ class Levelbuilder():
                     addCuCoInput()
         self.settings.selected = False
         self.settings.ParameterInput = Frame(self.settings)
-        self.settings.ParameterInput.grid(row = 2)
+        self.settings.ParameterInput.grid(row = 3)
         self.settings.CuCoInput = Frame(self.settings)
-        self.settings.CuCoInput.grid(row = 2,column=1)
+        self.settings.CuCoInput.grid(row = 3,column=1,sticky=N)
         self.settings.selectedMob = self.getMobAt(x,y)
         if(self.settings.selectedMob is None):
             self.settings.selectedMob = ["None",x,y,{},[]]
             self.settings.containing = False
         else:
             self.settings.containing = True
+        self.settings.header = Label(self.settings,text="Editing the field: (" + str(x) + "|"+str(y)+")")
+        self.settings.header.grid(row=0,sticky=NW)
+        self.settings.description = Label(self.settings,text='Choose an Mob')
+        self.settings.description.grid(row=1,sticky=W)
+
         self.settings.name = StringVar()
         self.settings.name.set(self.settings.selectedMob[0])
-        self.settings.description = Label(self.settings,text='Choose an Mob')
-        self.settings.description.grid(row=0)
         self.settings.dropdown_Object = OptionMenu(self.settings, self.settings.name,*self.possibleMobs,command=selectButtonFunction)
-        self.settings.dropdown_Object.grid(row=1, column=0)
+        self.settings.dropdown_Object.grid(row=2, column=0,sticky=W)
         self.settings.okButton = Button(self.settings, text="save", command=okButtonFunction)
         self.settings.okButton.grid(sticky=SW)
         if(self.settings.containing is True):
@@ -258,17 +290,17 @@ class Levelbuilder():
                     self.buttonMap[gO[1]][gO[2]].config(image=self.buttonMap[gO[1]][gO[2]].image)
                 except Exception:
                     self.buttonMap[gO[1]][gO[2]].config(text=gO[0][0])
-        else:
+        elif self.mode == 1:
             for mob in self.Mobs:
                 try:
                     self.buttonMap[mob[1]][mob[2]].image = PhotoImage(file="../../resources/" + mob[0]+".png")
                     self.buttonMap[mob[1]][mob[2]].config(image=self.buttonMap[mob[1]][mob[2]].image)
                 except Exception:
                     self.buttonMap[mob[1]][mob[2]].config(text=mob[0][0])
-    '''
-    saves the edited map to the selected file by replacing [WallDeclarations], [ObjectDeclarations] and [MobDeclarations]
-    '''
-    def save(self):
+
+
+    #exports the edited map to the selected file by replacing [WallDeclarations], [ObjectDeclarations] and [MobDeclarations]
+    def export(self):
         path = asksaveasfilename() #asks for a filepath
         print(path)
         #prepares Tiles
@@ -277,10 +309,10 @@ class Levelbuilder():
         yCo = 0
         for x in self.gameMap:
             for y in x:
-                if( self.gameMap[xCo][yCo].getIsSolid is True):
+                if( self.gameMap[xCo][yCo].getIsSolid()):
                     resultMap += "gameMap[" + str(xCo) + "]["+str(yCo)+"] = Wall()\n"
                 else:
-                    resultMap += "gameMap[" + str(xCo) + "]["+str(yCo)+"] = Ground()\n"
+                    resultMap += "gameMap[" + str(xCo) + "]["+str(yCo)+"] = Ground(Empty())\n"
                 yCo = yCo + 1
             yCo = 0
             xCo = xCo + 1
@@ -289,15 +321,15 @@ class Levelbuilder():
         resultObjects =  ""
         for gO in self.GameObjects:
             resultObjects += "gameMap["+str(gO[1])+"]["+str(gO[2])+"].setGameObject("+str(gO[0])+"())\n"
-            if not (gO[3] is None):
-                for CustomCode in gO[3]:
+            for CustomCode in gO[3]:
+                if not CustomCode.strip() == "":
                     resultObjects +="gameMap["+str(gO[1])+"]["+str(gO[2])+"].gameObject."+str(CustomCode)+"\n"
         #prepares Mobs
         resultMobs = ""
         for mob in self.Mobs:
             resultMobs += "mobs.append("+str(mob[0])+"("+str(mob[1])+", "+str(mob[2])+"".join(mob[3])+"))\n"
-            if not (mob[4] is []):
-                for CustomCode in mob[4]:
+            for CustomCode in mob[4]:
+                if not CustomCode.strip() == "":
                     resultMobs += "mobs[-1]."+str(CustomCode)+"\n"
 
         template = open('././resources/maps/levelTemplate.py', 'r').read() #opens the templete file
@@ -306,6 +338,8 @@ class Levelbuilder():
         updatedFile = updatedFile.split("[MobDeclarations]")[0] + resultMobs.replace("\n", "\n    ") + updatedFile.split("[MobDeclarations]")[1]
         updatedFile = updatedFile.replace("<playerPositionX>", str(self.playerposition[0]))
         updatedFile = updatedFile.replace("<playerPositionY>", str(self.playerposition[1]))
+        updatedFile = updatedFile.replace("<width>", str(len(self.gameMap[0])))
+        updatedFile = updatedFile.replace("<height>", str(len(self.gameMap)))
         open(path,"w").write(updatedFile) #writes the edited file to filesystem
 
 
