@@ -2,7 +2,7 @@ from src.logic.main.Map import *
 from src.logic.objects.GameObjects import *
 from src.logic.objects.Monsters import *
 def getLevel():
-    size = [10,10]
+    size = [10,15]
     mapHandler = MapHandler()
     gameMap = mapHandler.createMap(*size)
 
@@ -12,6 +12,7 @@ def getLevel():
 
     #[ObjectDeclarations]
     gameMap[5][5].setGameObject(LevelEnd())
+    gameMap[6][7].setGameObject(ItemAppears(positionX=2,positionY=2,item=Sword()))
     mobs = []
     # [MobDeclarations] is replaced with declarations following the style:  mobs.append(<Mobname>()).
     # in edge cases you can add special Arguments mobs.append(<Mobname>(*<Arguments>))

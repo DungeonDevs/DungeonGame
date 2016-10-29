@@ -6,7 +6,7 @@ import random
 #a class using pathfinding to move to the player
 class Hunter(IntelligentMonster):
 
-    def __init__(self, xPos, yPos, orientation, attack=2, health=10, eyesight=5):
+    def __init__(self, xPos, yPos, orientation=0, attack=2, health=10, eyesight=5):
         IntelligentMonster.__init__(self, xPos, yPos, orientation, attack, health, ID = 0)
         self.eyesight = eyesight
 
@@ -30,7 +30,7 @@ class Hunter(IntelligentMonster):
 
 class Slime(Monster):
 
-    def __init__(self, xPos, yPos, orientation):
+    def __init__(self, xPos, yPos, orientation=0):
         Monster.__init__(self, xPos, yPos, orientation, attack = 5, health = 10, ID = 1)
 
     def move(self, direction, turn):

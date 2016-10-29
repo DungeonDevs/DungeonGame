@@ -6,7 +6,6 @@ from src.logic.main.Engine import Engine, InputHandler
 from src.logic.main.Item import Empty, LevelEnd, Interactable, Item
 
 #imports for testing only
-from src.logic.objects.GameObjects import Leather, Sword
 from src.logic.objects.Monsters import Hunter
 from src.logic.main.PlayerClass import Knight, Healer, Adventurer, Thief
 
@@ -43,9 +42,7 @@ class Game(object):
             self.tick()
         #when the game has ended
         if(callback):
-            print("You won!")
-        else:
-            print("You lost!")
+            callback(self.gameWon)
 
     #is run every tick of the game
     def tick(self):
@@ -86,7 +83,7 @@ class Game(object):
         for a in range(len(self.mobs)):
             #intelligent monsters behave another way
             if isinstance(self.mobs[a], IntelligentMonster):
-                print(self.mobs[a].info)
+                #print(self.mobs[a].info)
                 self.mobs[a].move(self.gameMap, self.player, self.mobs, self.pathfinding)
                 continue
             self.mobs[a].move(0, True)
@@ -136,27 +133,33 @@ class Game(object):
             print("Level done!")
             self.levelID += 1
             if self.levelID > self.levels:
-                self.callback = True
+                self.gameWon = True
                 self.running = False
             else:
-                self.loadLevel(self.levelID)
+                try:
+                    self.loadLevel(levelToLoad=self.levelID)
+                except Exception as e:
+                    print(e)
+                    self.gameWon = True
+                    self.running = False
 
         # handing over a few important objects, so different InteractableObejcts can behave in interesting different ways
         if isinstance(gameObject, Interactable):
             gameObject.interact(self.player, self.gameMap, self.mobs)
+            self.gameMap[self.player.info[0]][self.player.info[1]].gameObject = Empty()
 
         self.gameMap[self.player.info[0]][self.player.info[1]].setGameObject(Empty())
 
     #tick 5 last
     def checkHealth(self):
         if self.player.info[4] <= 0:
-                    self.callback = False
+                    self.gameWon = False
                     self.running = False
         '''
         elif(len(self.mobs) == 0):
             print("Level done!")
             self.levelID += 1
-            self.loadLevel(self.levelID)
+            self.loadLevel(levelToLoad=self.levelID)
         '''
 
     #loads the current level
@@ -171,4 +174,4 @@ class Game(object):
 
         self.gameMap, self.mobs, self.player.info[0], self.player.info[1] = MapHandler.loadMap(self.levelID)
         self.mapHandler.createBorders(self.gameMap, len(self.gameMap),len(self.gameMap[0]))
-        self.pathfinding = astar.pathfinder(astar.gamemapNeighbors( self.gameMap))
+        self.pathfinding = astar.pathfinder(astar.gamemapNeighbors(self.gameMap))

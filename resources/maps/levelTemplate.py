@@ -1,5 +1,6 @@
 from src.logic.main.Map import *
-from src.logic.objects import GameObjects, Monsters
+from src.logic.objects.GameObjects import *
+from src.logic.objects.Monsters import *
 def getLevel():
     size = [<width>,<height>]
     mapHandler = MapHandler()
