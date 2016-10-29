@@ -1,5 +1,5 @@
-from src.logic.main.Item import GameObject, Item, Interactable, LevelEnd
-#TODO: Split this file into multiple files (Items, Interactables, Levelchanges etc.)
+from src.logic.main.Item import *
+
 '''
 CollectableItems
 '''
@@ -33,8 +33,11 @@ class FeatherChestplate(Item):
 '''
 InteractableGameObjects
 '''
-class Leather(Interactable):
-    def __init__(self):
+class ItemAppears(Interactable):
+    def __init__(self, positionX=0, positionY=0, item=Empty()):
         Interactable.__init__(self, 21, 0, False)
+        self.positionX = positionX
+        self.positionY = positionY
+        self.item = item
     def interact(self, player, gameMap, mobs):
-        gameMap[4][4].setGameObject(Sword())
+        gameMap[self.positionX][self.positionY].setGameObject(self.item)

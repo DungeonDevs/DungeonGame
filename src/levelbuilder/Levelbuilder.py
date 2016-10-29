@@ -3,6 +3,7 @@ from tkinter.filedialog import *
 from src.logic.main.Map import *
 from src.logic.objects.Monsters import *
 import src.logic.objects.Monsters as MonstersModule
+from src.logic.objects.GameObjects import *
 import src.logic.objects.GameObjects as GameObjectsModule
 import threading
 import os
@@ -14,8 +15,10 @@ returns a dictionary of argName:defaultValues for the input function
 def getDefaultParameter(func):
     try:
         parameter, varparameter, keywords, defaults = inspect.getargspec(func)
+        print(dict(zip(parameter[-len(defaults):], defaults)))
         return dict(zip(parameter[-len(defaults):], defaults))
     except TypeError as tp:
+        print("Error")
         return {}
 '''
 A tkinter gui to create maps for the game.
@@ -33,8 +36,8 @@ In the menu on the top of the window can be selected what is edited.
 you can set the playerposition (marked with P) by doublerightclicking a tile
 you can always set a tiles solid state by rightclicking the tile
 '''
-class Levelbuilder():
-    def __init__(self,width, height):
+class Levelbuilder(object):
+    def __init__(self,ySize=20, xSize=20):
         #prepare datastructure
         self.possibleGameObjects = ["Empty"] + [i[0] for i in inspect.getmembers(GameObjectsModule, inspect.isclass)]# A list of all possible GameObjects)
         excludes = ["GameObject","Interactable","Item","LevelEnd"]
@@ -48,25 +51,24 @@ class Levelbuilder():
         self.window = Tk()
         self.window.title('Levelbuilder')
         self.window.minsize(600,400)
-        self.window.maxsize(1280,720)
 
         #prepare map
-        if height > 20:
-            height = 20
-        if width > 32:
-            width = 32
+        if xSize > 20:
+            xSize = 20
+        if ySize > 32:
+            ySize = 32
         self.map = Frame(self.window)
         self.map.grid(row=0, column=0)
-        self.gameMap = MapHandler().createMap(width,height)
-        self.buttonMap = [[None for _ in range(width)] for _ in range(height)]
+        self.gameMap = MapHandler().createMap(xSize,ySize)
+        self.buttonMap = [[None for _ in range(xSize)] for _ in range(ySize)]
         for y in range(len(self.gameMap)):
             for x in range(len(self.gameMap[0])):
                 f = Frame(self.map, height=32, width=32)
                 f.pack_propagate(0) # don't shrink
                 f.grid(row=x, column=y)
-                self.buttonMap[y][x] = Button(f, command = self.getHandelerFunction(y,x), height=2, width = 2)
+                self.buttonMap[y][x] = Button(f, command = self.getHandelerFunction(y,x), width=2, height = 2)
                 self.buttonMap[y][x].bind('<Button-3>', lambda event,y=y, x=x: self.setWall(y,x))
-                self.buttonMap[y][x].bind('<Double-Button-3>', lambda event,y=y, x=x: (self.setPlayer(y,x),self.setWall(y,x)))
+                self.buttonMap[y][x].bind('<Triple-Button-3>', lambda event,y=y, x=x: self.setPlayer(y,x))
                 self.buttonMap[y][x].pack(fill=BOTH, expand=1)
 
         #prepare settings
@@ -126,19 +128,35 @@ class Levelbuilder():
         self.settings = Frame(self.window)
         self.settings.grid(row=0, column=1, sticky=NW)
         def okButtonFunction():
-            self.settings.selectedObject[0] = self.settings.name.get()
             if(not self.settings.selected):
                 return
-            self.settings.selectedObject[3] = [cuco.get() for cuco in self.settings.cuCoInput]
-            self.setGameObjectAt(x,y, self.settings.selectedObject[0], self.settings.selectedObject[3])
+            self.settings.selectedObject[4] = [cuco.get() for cuco in self.settings.cuCoInput]
+            self.settings.selectedObject[3] = [","+ self.settings.parameterLabels[a].cget("text")+"="+ self.settings.parameterInputFields[a].get() for a in range(len(self.settings.parameterLabels))]
+            self.setGameObjectAt(x,y, self.settings.selectedObject[0], self.settings.selectedObject[3], self.settings.selectedObject[4])
             self.updateMap()
         def selectButtonFunction(event):
             if(self.settings.name.get()== "Empty"):
-                self.deletGameObjectAt(x,y)
+                self.deleteGameObjectAt(x,y)
                 self.updateMap()
                 self.openSettings(x,y)
                 return
             self.settings.selected = True
+            self.settings.selectedObject[0] = self.settings.name.get()
+            self.settings.parameterLabels = []
+            self.settings.parameterInputFields = []
+            defaultParameterDict = getDefaultParameter(eval(self.settings.selectedObject[0]))
+            if(not defaultParameterDict == {}): #if there are no defaultarguments return and do not offer this menu
+                for key in defaultParameterDict:
+                    self.settings.parameterLabels.append(Label(self.settings.ParameterInput,text=key))
+                    self.settings.parameterLabels[-1].grid(row= len(self.settings.parameterLabels), column = 0)
+                    self.settings.parameterInputFields.append(Entry(self.settings.ParameterInput))
+                    default = defaultParameterDict.get(key, None)
+                    self.settings.parameterInputFields[-1].insert(0,default)
+                    self.settings.parameterInputFields[-1].grid(row= len(self.settings.parameterInputFields), column = 1)
+                    print(key)
+                #HeaderArguments
+                self.settings.parameterInputHeader= Label(self.settings.ParameterInput,text='Arguments')
+                self.settings.parameterInputHeader.grid(row=0,column = 0,columnspan=2)
             #CustomCOde
             def addCuCoInput():
                 if(len(self.settings.cuCoInput) > 7):
@@ -156,19 +174,19 @@ class Levelbuilder():
             self.settings.addCuCoButton.grid(row=0,column=1)
             self.settings.removeCuCoButton = Button(self.settings.CuCoInput, text="-", command=removeCuCoInput)
             self.settings.removeCuCoButton.grid(row=0,column=2)
-            for cuco in self.settings.selectedObject[3]:
+            for cuco in self.settings.selectedObject[4]:
                 self.settings.cuCoInput[-1].insert(0, cuco)
-                if(cuco != self.settings.selectedObject[3][-1]):
+                if(cuco != self.settings.selectedObject[4][-1]):
                     addCuCoInput()
 
         self.settings.selected = False
-        #self.settings.ParameterInput = Frame(self.settings)
-        #self.settings.ParameterInput.grid(row = 3)
+        self.settings.ParameterInput = Frame(self.settings)
+        self.settings.ParameterInput.grid(row = 3)
         self.settings.CuCoInput = Frame(self.settings)
         self.settings.CuCoInput.grid(row = 3,column=1)
         self.settings.selectedObject = self.getGameObjectAt(x,y)
         if(self.settings.selectedObject is None):
-            self.settings.selectedObject = ["Empty",x,y,[]]
+            self.settings.selectedObject = ["Empty",x,y,{},[]]
             self.settings.containing = False
         else:
             self.settings.containing = True
@@ -176,6 +194,7 @@ class Levelbuilder():
         self.settings.header.grid(row=0,sticky=NW)
         self.settings.description = Label(self.settings,text='Choose an Object')
         self.settings.description.grid(row=1,sticky=W)
+
         self.settings.name = StringVar()
         self.settings.name.set(self.settings.selectedObject[0])
         self.settings.dropdown_Object = OptionMenu(self.settings, self.settings.name,*self.possibleGameObjects,command=selectButtonFunction)
@@ -206,13 +225,16 @@ class Levelbuilder():
             self.settings.selectedMob[0] = self.settings.name.get()
             self.settings.parameterLabels = []
             self.settings.parameterInputFields = []
-            defaults = getDefaultParameter(eval(self.settings.selectedMob[0]))
-            if(not defaults == {}): #if there are no defaultarguments return and do not offer this menu
-                for key in defaults:
+            defaultParameterDict = getDefaultParameter(eval(self.settings.selectedMob[0]))
+            if(not defaultParameterDict == {}): #if there are no defaultarguments return and do not offer this menu
+                for key in defaultParameterDict:
                     self.settings.parameterLabels.append(Label(self.settings.ParameterInput,text=key))
                     self.settings.parameterLabels[-1].grid(row= len(self.settings.parameterLabels), column = 0)
                     self.settings.parameterInputFields.append(Entry(self.settings.ParameterInput))
-                    self.settings.parameterInputFields[-1].insert(0,defaults.get(key, None))
+                    default = defaultParameterDict.get(key, None)
+                    if(inspect.isclass(default)):
+                        default = default.__class__.__name__
+                    self.settings.parameterInputFields[-1].insert(0,defaultParameterDict.get(key, None))
                     self.settings.parameterInputFields[-1].grid(row= len(self.settings.parameterInputFields), column = 1)
                     print(key)
                 #HeaderArguments
@@ -282,7 +304,7 @@ class Levelbuilder():
 
         #shows the playerposition
         self.buttonMap[self.playerposition[0]][self.playerposition[1]].config(text="P")
-
+        #TODO: maybe add images
         if self.mode == 0:
             for gO in self.GameObjects:
                 try:
@@ -320,8 +342,8 @@ class Levelbuilder():
         #prepares items and other gameobjects
         resultObjects =  ""
         for gO in self.GameObjects:
-            resultObjects += "gameMap["+str(gO[1])+"]["+str(gO[2])+"].setGameObject("+str(gO[0])+"())\n"
-            for CustomCode in gO[3]:
+            resultObjects += "gameMap["+str(gO[1])+"]["+str(gO[2])+"].setGameObject("+str(gO[0])+'('+"".join(mob[3])+"))\n"
+            for CustomCode in gO[4]:
                 if not CustomCode.strip() == "":
                     resultObjects +="gameMap["+str(gO[1])+"]["+str(gO[2])+"].gameObject."+str(CustomCode)+"\n"
         #prepares Mobs
@@ -354,7 +376,7 @@ class Levelbuilder():
         self.GameObjects.append([name,x,y,customCodes])
         self.updateMap()
 
-    def deletGameObjectAt(self,x,y):
+    def deleteGameObjectAt(self,x,y):
         for gameobject in self.GameObjects:
             if(gameobject[1]== x and gameobject[2]== y):
                 self.GameObjects.remove(gameobject)
@@ -376,5 +398,3 @@ class Levelbuilder():
          for mob in self.Mobs:
             if(mob[1]== x and mob[2]== y):
                 self.Mobs.remove(mob)
-
-#level = Levelbuilder(20,10)#starts a Levelbuilder

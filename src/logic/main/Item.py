@@ -1,7 +1,7 @@
 '''
 superclasses
 '''
-class GameObject():
+class GameObject(object):
     def __init__(self, ID, orientation, isSolid):
         self.ID = ID
         self.orientation = orientation

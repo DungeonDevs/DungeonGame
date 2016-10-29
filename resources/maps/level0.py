@@ -12,6 +12,7 @@ def getLevel():
 
     #[ObjectDeclarations]
     gameMap[5][5].setGameObject(LevelEnd())
+    gameMap[6][7].setGameObject(ItemAppears(positionX=2,positionY=2,item=Sword()))
     mobs = []
     # [MobDeclarations] is replaced with declarations following the style:  mobs.append(<Mobname>()).
     # in edge cases you can add special Arguments mobs.append(<Mobname>(*<Arguments>))

@@ -6,7 +6,6 @@ from src.logic.main.Engine import Engine, InputHandler
 from src.logic.main.Item import Empty, LevelEnd, Interactable, Item
 
 #imports for testing only
-from src.logic.objects.GameObjects import Leather, Sword
 from src.logic.objects.Monsters import Hunter
 from src.logic.main.PlayerClass import Knight, Healer, Adventurer, Thief
 
@@ -147,6 +146,7 @@ class Game(object):
         # handing over a few important objects, so different InteractableObejcts can behave in interesting different ways
         if isinstance(gameObject, Interactable):
             gameObject.interact(self.player, self.gameMap, self.mobs)
+            self.gameMap[self.player.info[0]][self.player.info[1]].gameObject = Empty()
 
         self.gameMap[self.player.info[0]][self.player.info[1]].setGameObject(Empty())
 

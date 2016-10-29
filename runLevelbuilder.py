@@ -1,2 +1,4 @@
 from src.levelbuilder.Levelbuilder import Levelbuilder
-level = Levelbuilder(7,5)
+width = int(input("width: "))
+height = int(input("height:"))
+level = Levelbuilder(ySize= width,xSize=height)
