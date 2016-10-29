@@ -59,36 +59,31 @@ class Levelbuilder():
                 yCo = yCo + 1
             xCo = xCo + 1
         #select what to show
-        self.chooseDisplaytype = Frame(master=self.window)
-        self.display = IntVar()
-        self.display.set(0)
-        self.GameObjects_radiobutton = Radiobutton(master=self.chooseDisplaytype, text='GameObjects', value='0', variable=self.display,command=self.updateMap)
-        self.GameObjects_radiobutton.select()
-        self.GameObjects_radiobutton.grid(row=0, column=0)
-        self.Mobs_radiobutton = Radiobutton(master=self.chooseDisplaytype, text='Mobs', value='1', variable=self.display, command=self.updateMap)
-        self.Mobs_radiobutton.grid(row=0, column=1)
-        self.chooseDisplaytype.grid(row=1)
+        self.displayMode=0
         self.updateMap()
         #PrepareSettings
         self.settings = Frame(self.window)
         self.settings.grid(row=0, column=1, sticky=E)
-
         #Menubar
         self.menubar = Menu(self.window)
         self.menubar.add_command(label="save", command=self.save)
         self.menubar.add_command(label="quit", command=self.window.quit)
+        self.menubar.add_command(label="gameobjects", command= lambda : self.setDisplayMode(0))
+        self.menubar.add_command(label="mobs", command= lambda : self.setDisplayMode(1))
         self.window.config(menu=self.menubar)
-
         self.window.mainloop()
 
     def setWall(self, xCo, yCo):
         self.gameMap[xCo][yCo].isSolid = not self.gameMap[xCo][yCo].isSolid
         self.updateMap()
 
+    def setDisplayMode(self, mode):
+        self.displayMode = mode
+        self.updateMap()
+
     def setPlayer(self, xCo, yCo):
         self.playerposition = (xCo,yCo)
         self.updateMap()
-
     #returns a function oppening the settings for the desired coordinates
     def getSettingsFunction(self,xCo, yCo):
         def function():
@@ -99,7 +94,7 @@ class Levelbuilder():
         self.settings.destroy()
         self.settings = Frame(self.window)
         self.settings.grid(row=0, column=1, sticky=E)
-        if(self.display.get() == 0):
+        if(self.displayMode == 0):
             def okButtonFunction():
                 self.settings.selectedObject[0] = self.settings.name.get()
                 if(not self.settings.selected):
@@ -246,7 +241,7 @@ class Levelbuilder():
         #shows the playerposition
         self.buttonMap[self.playerposition[0]][self.playerposition[1]].config(text="P")
 
-        if self.display.get() == 0:
+        if self.displayMode == 0:
             for gO in self.GameObjects:
                 try:
                     self.buttonMap[gO[1]][gO[2]].image = PhotoImage(file="../../resources/" + gO[0]+"default.png")
