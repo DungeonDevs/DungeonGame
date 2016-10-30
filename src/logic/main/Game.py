@@ -15,9 +15,8 @@ main class, contains the main loop and the corresponding methods
 '''
 class Game(object):
 
-    #creates the needed engine, inputHandler and mapHandler
-    engine = Engine()
-    inputHandler = InputHandler()
+    #creates the needed #inputHandler and mapHandler
+    #inputHandler = InputHandler()
     mapHandler = MapHandler()
 
     levelID = 0 # stores which level is played right now
@@ -34,6 +33,8 @@ class Game(object):
     @param: callback - a callback that s called when the game ends. True is handed over if the player won
     '''
     def __init__(self, hero, callback = None):
+        #call the engine setup in gamesetup
+        self.engine = Engine(debug = True)
         # if hero is presented the player is set to hero
         if(not (hero is None)):
             self.player = Player(1,1,1,hero)
@@ -54,7 +55,7 @@ class Game(object):
         #pygame.time.wait(10)
         self.display()
         self.playerMove()
-        if(self.playerMoved):
+        if(self.playerMoved): #only run if the player moved
             self.mobMove()
             self.fight()
             self.gameObjectAction()
@@ -63,7 +64,7 @@ class Game(object):
     def display(self):
         self.engine.display(self.gameMap, self.player.info, self.mobs)
         print(self.player.info)
-    #tick 1 - blocking input method
+    #tick 1 - nonblocking input method
     def playerMove(self):
         for event in pygame.event.get():
             if(event.type == pygame.QUIT):
@@ -71,6 +72,7 @@ class Game(object):
                 self.gameWon = False
                 self.running = False
             elif event.type == pygame.KEYDOWN:
+                print("input: ", event.key)
                 if event.key == pygame.K_w:
                     self.player.move(0)
                     if self.gameMap[self.player.info[0]][self.player.info[1]].getIsSolid() or self.gameMap[self.player.info[0]][self.player.info[1]].gameObject.isSolid:
