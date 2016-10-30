@@ -7,6 +7,7 @@ CollectableItems
 class Sword(Item):
     def __init__(self):
         Item.__init__(self, 12, 0, False, healthUp=0, attackUp=10)
+'''
 class RedSwordOfFire(Item):
     def __init__(self):
         Item.__init__(self, 13, 0, False, 1, 16)
@@ -29,7 +30,7 @@ class Stick(Item):
 class FeatherChestplate(Item):
     def __init__(self):
         Item.__init__(self, 111, 0, False, 1, 0)
-
+'''
 '''
 InteractableGameObjects
 '''

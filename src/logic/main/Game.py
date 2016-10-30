@@ -34,7 +34,7 @@ class Game(object):
     '''
     def __init__(self, hero, callback = None):
         #call the engine setup in gamesetup
-        self.engine = Engine(debug = True)
+        self.engine = Engine(hero,debug = True)
         # if hero is presented the player is set to hero
         if(not (hero is None)):
             self.player = Player(1,1,1,hero)

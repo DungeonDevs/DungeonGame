@@ -11,6 +11,7 @@ def getLevel():
     # or add custom code gameMap[<X>][<Y>].gameObject.<CustomCode>
 
     #[ObjectDeclarations]
+    gameMap[3][5].setGameObject(Sword())
     #gameMap[5][5].setGameObject(LevelEnd())
     #gameMap[6][7].setGameObject(ItemAppears(positionX=2,positionY=2,item=Sword()))
     mobs = []
@@ -26,6 +27,6 @@ def getLevel():
     #mobs.append(Hunter(4,4,0))
     #mobs.append(Hunter(6,5,0))
 
-    playerPositionX = 2
+    playerPositionX = 1
     playerPositionY = 1
     return gameMap, mobs, playerPositionX, playerPositionY

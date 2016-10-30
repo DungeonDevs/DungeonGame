@@ -11,7 +11,7 @@ creates a new instance of the game
 class Launcher:
     def __init__(self, debug = False):
         if debug:
-            game = Game(Healer())
+            game = Game(Adventurer())
             return
         self.window = Tk()
         self.window.title('Launcher')

@@ -205,7 +205,7 @@ class Engine(object):
 
 		# deltas to the players location to move the camera away
 		dY = 5#1.2 #.1
-		dBack = 5 #1.2 #.5
+		dBack = 2 #1.2 #.5
 		dLookatup = -.1
 
 		# initialize vars
