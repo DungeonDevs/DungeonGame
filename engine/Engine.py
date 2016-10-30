@@ -7,13 +7,14 @@ from OpenGL.GLU import *
 from engine.classes.RenderObject import *
 #
 # A helper class to handle directions.
-#
+#TODO: Sync this direction Vaules with the ones used in the main game
+#Files to edit: entitys.py; Game.py
 class Direction(object):
 
-	NORTH = 0
-	EAST  = 1
-	SOUTH = 2
-	WEST  = 3
+	NORTH = 3
+	EAST  = 2
+	SOUTH = 1
+	WEST  = 0
 
 	#
 	# Turns a possibly invalid direction into a valid one
@@ -203,8 +204,8 @@ class Engine(object):
 		direction = Direction.validate(direction)
 
 		# deltas to the players location to move the camera away
-		dY = .1
-		dBack = .5
+		dY = 5#1.2 #.1
+		dBack = 5 #1.2 #.5
 		dLookatup = -.1
 
 		# initialize vars

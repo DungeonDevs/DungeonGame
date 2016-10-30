@@ -9,6 +9,8 @@ creates a new instance of the game
 '''
 class Launcher:
     def __init__(self):
+        game = Game(Healer())
+        return
         self.window = Tk()
         self.window.title('Launcher')
         self.window.minsize(600,400)

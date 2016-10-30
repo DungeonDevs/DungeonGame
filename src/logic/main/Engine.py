@@ -47,7 +47,7 @@ class EngineInterface(object):
         self.wall = RenderObject.createOneColorCube((100/255, 100/255, 0))
         self.item = LoadedObject("engine.resources.block", 16)
         self.item.setGroundNecessary(True)
-        self.playermodel = LoadedObject("resources.heroes.charakter1", 32)
+        self.playermodel = LoadedObject("resources.heroes.charakter1", 32,(.3,0,0))
         #self.mob = RenderObject.createOneColorCube((255/255, 0, 0))
         self.engine = Engine((600, 400))
         self.engine.setGround(self.ground)
@@ -71,7 +71,7 @@ class EngineInterface(object):
                         convertedMap[x][y] = self.item
         #for mob in mobs:
         #    convertedMap[mob.info[0]][mob.info[1]] = self.mob
-        convertedMap[playerInfo[1]][playerInfo[0]] = self.playermodel
+        convertedMap[playerInfo[0]][playerInfo[1]] = self.playermodel
         self.engine.setMap(convertedMap)
         self.engine.setPlayerPosInfo(playerInfo[0], playerInfo[1], playerInfo[2])
         self.engine.render()
