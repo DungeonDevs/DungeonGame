@@ -4,8 +4,7 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from classes.RenderObject import *
-
+from engine.classes.RenderObject import *
 #
 # A helper class to handle directions.
 #

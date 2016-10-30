@@ -1,6 +1,6 @@
-from Engine import Engine, Direction
-from classes.RenderObject import RenderObject
-from classes.LoadedObject import LoadedObject
+from engine.Engine import Engine, Direction
+from engine.classes.RenderObject import RenderObject
+from engine.classes.LoadedObject import LoadedObject
 
 import pygame
 
@@ -25,13 +25,13 @@ cube3.setRenderAsEdges()
 
 # -------------------------------------------
 # create object from file
-loadedObj = LoadedObject("resources.block", 16)
+loadedObj = LoadedObject("engine.resources.block", 16)
 loadedObj.setOffsets((.5, 0, -.5))
 # loadedObj.setScale(2)
 
 # -------------------------------------------
 # create engine object
-engine = Engine((1500, 1000))
+engine = Engine((600, 400))
 # engine.debug = True # to show axis
 
 # -------------------------------------------

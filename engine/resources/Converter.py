@@ -414,4 +414,4 @@ class PlyPyFile(object):
 		self.output = ""
 
 
-main()
+#main()
