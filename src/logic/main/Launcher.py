@@ -6,11 +6,13 @@ import sys, inspect
 
 '''
 creates a new instance of the game
+@param debug - if set to True the game will start with a Healer() and will skip the launcher (for quicker testing)
 '''
 class Launcher:
-    def __init__(self):
-        game = Game(Healer())
-        return
+    def __init__(self, debug = False):
+        if debug:
+            game = Game(Healer())
+            return
         self.window = Tk()
         self.window.title('Launcher')
         self.window.minsize(600,400)
