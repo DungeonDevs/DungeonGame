@@ -136,7 +136,11 @@ class Game(object):
                 #randomly no damage taken at all, depends on agility, dexterity and intuition
                 if (self.player.info[9] + self.player.info[10] + self.player.info[8]) < random.randint(0, 150):
                     #damage taken depends on players attack and block (and monsters attack and health)
-                    self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11])
+                    #self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11])
+                    damageTaken = (self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]
+                    if self.player.info[11] > 0:
+                        damageTaken = (100-self.player.info[11])/100 * damageTaken
+                    self.player.info[4] -= damageTaken
                 #if player isn't dead, the mob is
                 if (not self.player.info[4] <= 0):
                     dead += [a]
