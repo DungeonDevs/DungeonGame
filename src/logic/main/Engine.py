@@ -16,12 +16,8 @@ class EngineInterface(object):
     def __init__(self, player, debug = False):
         self.ground = RenderObject.createOneColorCube((150/255, 75/255, 0))
         self.wall = RenderObject.createOneColorCube((100/255, 100/255, 0))
-        #self.item = LoadedObject("engine.resources.block", 16)
         self.loader = ClassLoader()
-        #self.item.setGroundNecessary(True)
-        #print(player.__class__.__name__)
         self.playermodel = LoadedObject("resources.heroes."+ player.__class__.__name__, 32,(.3,0,0.3))
-        #self.mob = RenderObject.createOneColorCube((255/255, 0, 0))
         self.engine = Engine((600, 400))
         self.engine.setGround(self.ground)
         self.engine.startUp()
@@ -33,9 +29,6 @@ class EngineInterface(object):
             self.debug = False
 
     def display(self, gameMap, playerInfo, mobs):
-        if self.debug:
-            self.debugEngine.display(gameMap, playerInfo, mobs)
-        #convertedMap = gameMap.copy()
         convertedMap = [[None for c in range(len(gameMap[0]))] for i in range(len(gameMap))]
         for y in range(len(gameMap[0])):
             for x in range(len(gameMap)):
@@ -64,6 +57,8 @@ class EngineInterface(object):
         print("Dexterity: " + str(playerInfo[9]))
         print("Agility: " + str(playerInfo[10]))
         print("Block: " + str(playerInfo[11]))
+        if self.debug:
+            self.debugEngine.display(gameMap, playerInfo, mobs)
 
 #@deplaced
 class InputHandler(object):
@@ -100,5 +95,3 @@ class DebugEngine(object):
 
         for y in range(len(gameMap[0])):
             print(field[y])
-        print("Health: " + str(playerInfo[4])+ "/" + str(playerInfo[5].stats[2]) + " Attack: " + str(playerInfo[3]) + " Healing: " + str(playerInfo[5].stats[3]))
-        print(playerInfo[0:5] + playerInfo[6:12])
