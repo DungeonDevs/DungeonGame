@@ -39,8 +39,8 @@ you can always set a tiles solid state by rightclicking the tile
 class Levelbuilder(object):
     def __init__(self,ySize=20, xSize=20):
         #prepare datastructure
-        self.possibleGameObjects = ["Empty"] + [i[0] for i in inspect.getmembers(GameObjectsModule, inspect.isclass)]# A list of all possible GameObjects)
-        excludes = ["GameObject","Interactable","Item","LevelEnd"]
+        self.possibleGameObjects = [i[0] for i in inspect.getmembers(GameObjectsModule, inspect.isclass)]# A list of all possible GameObjects)
+        excludes = ["GameObject","Interactable","Item","SolidItem"]
         self.possibleGameObjects = [x for x in self.possibleGameObjects if x not in excludes]
         self.possibleMobs = ["None"] + [i[0] for i in inspect.getmembers(MonstersModule, inspect.isclass)] # A list of all possible Mobs
         self.possibleMobs = [x for x in self.possibleMobs if x not in excludes]
@@ -138,13 +138,24 @@ class Levelbuilder(object):
             if(self.settings.name.get()== "Empty"):
                 self.deleteGameObjectAt(x,y)
                 self.updateMap()
-                self.openSettings(x,y)
+                self.openGameObjectSettings(x,y)
                 return
             self.settings.selected = True
             self.settings.selectedObject[0] = self.settings.name.get()
+            try:
+                for label in self.settings.parameterLabels:
+                    label.destroy()
+                for parameterInputField in self.settings.parameterInputFields:
+                    parameterInputField.destroy()
+                self.settings.parameterInputHeader.destroy()
+            except Exception as e:
+                pass
             self.settings.parameterLabels = []
             self.settings.parameterInputFields = []
-            defaultParameterDict = getDefaultParameter(eval(self.settings.selectedObject[0]))
+            if (self.settings.selectedObject[3] == {}):
+                defaultParameterDict = getDefaultParameter(eval(self.settings.selectedObject[0]))
+            else:
+                defaultParameterDict=self.settings.selectedObject[3]
             if(not defaultParameterDict == {}): #if there are no defaultarguments return and do not offer this menu
                 for key in defaultParameterDict:
                     self.settings.parameterLabels.append(Label(self.settings.ParameterInput,text=key))
@@ -202,7 +213,7 @@ class Levelbuilder(object):
         self.settings.okButton = Button(self.settings, text="save", command=okButtonFunction)
         self.settings.okButton.grid(sticky=SW)
         if(self.settings.containing is True):
-            selectButtonFunction()
+            selectButtonFunction(None)
 
     def openMobSettings(self, x, y):
         self.settings.destroy()
@@ -219,13 +230,24 @@ class Levelbuilder(object):
             if(self.settings.name.get()== "None"):
                 self.deleteMobAt(x,y)
                 self.updateMap()
-                self.openSettings(x,y)
+                self.openMobSettings(x,y)
                 return
             self.settings.selected = True
             self.settings.selectedMob[0] = self.settings.name.get()
+            try:
+                for label in self.settings.parameterLabels:
+                    label.destroy()
+                for parameterInputField in self.settings.parameterInputFields:
+                    parameterInputField.destroy()
+                self.settings.parameterInputHeader.destroy()
+            except Exception as e:
+                pass
             self.settings.parameterLabels = []
             self.settings.parameterInputFields = []
-            defaultParameterDict = getDefaultParameter(eval(self.settings.selectedMob[0]))
+            if (self.settings.selectedMob[3] == {}):
+                defaultParameterDict = getDefaultParameter(eval(self.settings.selectedMob[0]))
+            else:
+                defaultParameterDict=self.settings.selectedMob[3]
             if(not defaultParameterDict == {}): #if there are no defaultarguments return and do not offer this menu
                 for key in defaultParameterDict:
                     self.settings.parameterLabels.append(Label(self.settings.ParameterInput,text=key))
@@ -285,7 +307,7 @@ class Levelbuilder(object):
         self.settings.okButton = Button(self.settings, text="save", command=okButtonFunction)
         self.settings.okButton.grid(sticky=SW)
         if(self.settings.containing is True):
-            selectButtonFunction()
+            selectButtonFunction(None)
 
     def updateMap(self):
         #clears the map
@@ -372,8 +394,8 @@ class Levelbuilder(object):
                 return gO
         return None
 
-    def setGameObjectAt(self, x, y, name, customCodes):
-        self.GameObjects.append([name,x,y,customCodes])
+    def setGameObjectAt(self, x, y, name,  parameter, customCodes):
+        self.GameObjects.append([name,x,y, parameter, customCodes])
         self.updateMap()
 
     def deleteGameObjectAt(self,x,y):

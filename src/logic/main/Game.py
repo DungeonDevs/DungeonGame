@@ -2,21 +2,21 @@ from src.logic.main.Map import MapHandler
 from src.logic.main.Entity import Player, Monster, IntelligentMonster
 import src.utils.astar as astar
 import random
-from src.logic.main.Engine import Engine, InputHandler
-from src.logic.main.Item import Empty, LevelEnd, Interactable, Item
-
+from src.logic.main.Engine import EngineInterface as Engine, InputHandler
+from src.logic.main.Item import Empty, LevelEnd, Interactable, Item, Spawner
+import pygame
 #imports for testing only
 from src.logic.objects.Monsters import Hunter
 from src.logic.main.PlayerClass import Knight, Healer, Adventurer, Thief
+import time
 
 '''
 main class, contains the main loop and the corresponding methods
 '''
 class Game(object):
 
-    #creates the needed engine, inputHandler and mapHandler
-    engine = Engine()
-    inputHandler = InputHandler()
+    #creates the needed #inputHandler and mapHandler
+    #inputHandler = InputHandler()
     mapHandler = MapHandler()
 
     levelID = 0 # stores which level is played right now
@@ -33,11 +33,14 @@ class Game(object):
     @param: callback - a callback that s called when the game ends. True is handed over if the player won
     '''
     def __init__(self, hero, callback = None):
+        #call the engine setup in gamesetup
+        self.engine = Engine(hero,debug = True)
         # if hero is presented the player is set to hero
         if(not (hero is None)):
             self.player = Player(1,1,1,hero)
         self.loadLevel(levelToLoad = 0) # load first level
         #main loop as long as the game is running
+        self.lastTick = time.time()
         while self.running:
             self.tick()
         #when the game has ended
@@ -46,17 +49,51 @@ class Game(object):
 
     #is run every tick of the game
     def tick(self):
+        self.playerMoved = False
+        print("lasttick: ",(time.time() - self.lastTick)/1000)
+        lastTick=time.time()
+        pygame.time.wait(1000)
         self.display()
         self.playerMove()
-        self.mobMove()
-        self.fight()
-        self.gameObjectAction()
-        self.checkHealth()
+        if(self.playerMoved): #only run if the player moved
+            self.mobMove()
+            self.fight()
+            self.gameObjectAction()
+            self.checkHealth()
     #tick 0
     def display(self):
         self.engine.display(self.gameMap, self.player.info, self.mobs)
-    #tick 1 - blocking input method
+        print(self.player.info)
+    #tick 1 - nonblocking input method
     def playerMove(self):
+        for event in pygame.event.get():
+            if(event.type == pygame.QUIT):
+                pygame.quit()
+                self.gameWon = False
+                self.running = False
+            elif event.type == pygame.KEYDOWN:
+                print("input: ", event.key)
+                if event.key == pygame.K_w:
+                    self.player.move(0)
+                    if self.gameMap[self.player.info[0]][self.player.info[1]].getIsSolid() or self.gameMap[self.player.info[0]][self.player.info[1]].gameObject.isSolid:
+                        self.player.move(1)
+                elif event.key == pygame.K_d:
+                    self.player.info[2] -= 1
+                    if self.player.info[2] < 0:
+                        self.player.info[2] = 3
+                elif event.key == pygame.K_a:
+                    self.player.info[2] += 1
+                    if self.player.info[2] > 3:
+                        self.player.info[2] = 0
+                elif event.key == pygame.K_s:
+                    self.player.move(1)
+                    if self.gameMap[self.player.info[0]][self.player.info[1]].getIsSolid() or self.gameMap[self.player.info[0]][self.player.info[1]].gameObject.isSolid:
+                        self.player.move(0)
+                else:
+                    return
+                self.player.heal()
+                self.playerMoved = True
+        '''
         inputKey = self.inputHandler.getInput()
         if inputKey == "w":
             self.player.move(0)
@@ -77,7 +114,7 @@ class Game(object):
         elif inputKey == "stop":
             self.running = False
         self.player.heal()
-
+        '''
     #tick 2
     def mobMove(self):
         for a in range(len(self.mobs)):
@@ -99,7 +136,11 @@ class Game(object):
                 #randomly no damage taken at all, depends on agility, dexterity and intuition
                 if (self.player.info[9] + self.player.info[10] + self.player.info[8]) < random.randint(0, 150):
                     #damage taken depends on players attack and block (and monsters attack and health)
-                    self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11])
+                    #self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11])
+                    damageTaken = (self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]
+                    if self.player.info[11] > 0:
+                        damageTaken = (100-self.player.info[11])/100 * damageTaken
+                    self.player.info[4] -= damageTaken
                 #if player isn't dead, the mob is
                 if (not self.player.info[4] <= 0):
                     dead += [a]
@@ -112,6 +153,12 @@ class Game(object):
 
     #tick 4
     def gameObjectAction(self):
+        #run spawnercode
+        for y in range(len(self.gameMap[0])):
+            for x in range(len(self.gameMap)):
+                if isinstance(self.gameMap[x][y].gameObject, Spawner):
+                    self.gameMap[x][y].gameObject.run(self.gameMap,self.mobs,self.player)
+
         gameObject = self.gameMap[self.player.info[0]][self.player.info[1]].gameObject
 
         if isinstance(gameObject, Empty):
@@ -146,7 +193,6 @@ class Game(object):
         # handing over a few important objects, so different InteractableObejcts can behave in interesting different ways
         if isinstance(gameObject, Interactable):
             gameObject.interact(self.player, self.gameMap, self.mobs)
-            self.gameMap[self.player.info[0]][self.player.info[1]].gameObject = Empty()
 
         self.gameMap[self.player.info[0]][self.player.info[1]].setGameObject(Empty())
 

@@ -1,4 +1,5 @@
 from src.logic.main.Item import *
+from src.logic.objects.Monsters import *
 
 '''
 CollectableItems
@@ -7,6 +8,7 @@ CollectableItems
 class Sword(Item):
     def __init__(self):
         Item.__init__(self, 12, 0, False, healthUp=0, attackUp=10)
+'''
 class RedSwordOfFire(Item):
     def __init__(self):
         Item.__init__(self, 13, 0, False, 1, 16)
@@ -29,7 +31,7 @@ class Stick(Item):
 class FeatherChestplate(Item):
     def __init__(self):
         Item.__init__(self, 111, 0, False, 1, 0)
-
+'''
 '''
 InteractableGameObjects
 '''
@@ -41,3 +43,14 @@ class ItemAppears(Interactable):
         self.item = item
     def interact(self, player, gameMap, mobs):
         gameMap[self.positionX][self.positionY].setGameObject(self.item)
+'''
+Spawners
+'''
+#spawns weak funters with great range to prevent the player form getting overpowered
+class HunterSpawner(Spawner):
+    def __init__(self, delay=5, initDelay=False,spawnPoints=[(0,0),(2,2)]):
+        Spawner.__init__(self, delay=delay ,initDelay=False)
+        self.spawnPoints = spawnPoints
+    def _spawn(self, gameMap, mobs, player):
+        entry = random.randint(0,len(self.spawnPoints))
+        mobs.append(Hunter(self.spawnPoints[entry][0],0,2,10,50))
