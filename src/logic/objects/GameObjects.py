@@ -53,5 +53,5 @@ class HunterSpawner(Spawner):
         Spawner.__init__(self, delay=delay ,initDelay=False)
         self.spawnPoints = spawnPoints
     def _spawn(self, gameMap, mobs, player):
-        entry = randint(0,len(self.spawnPoints))
-        mobs.append(Hunter(self.spawnPoints[entry][0],0,2,10,50))
+        entry = randint(0,len(self.spawnPoints)-1)
+        mobs.append(Hunter(self.spawnPoints[entry][0],self.spawnPoints[entry][1],0,10,10,50))

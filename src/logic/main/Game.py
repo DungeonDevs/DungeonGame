@@ -30,9 +30,8 @@ class Game(object):
     gameWon = None
     '''
     @param: hero - the hero to use
-    @param: callback - a callback that s called when the game ends. True is handed over if the player won
     '''
-    def __init__(self, hero, callback = None):
+    def __init__(self, hero):
         #call the engine setup in gamesetup
         self.engine = Engine(hero,debug = False)
         #
@@ -53,9 +52,10 @@ class Game(object):
         self.displayFirst = True
         while self.running:
             self.tick()
-        #when the game has ended
-        if(callback):
-            callback(self.gameWon)
+        if(self.gameWon):
+            print("You WON!")
+        else:
+            print("GAMEOVER!")
 
     #is run every tick of the game
     def tick(self):
@@ -73,6 +73,7 @@ class Game(object):
             self.gameObjectAction()
             self.checkHealth()
             self.playerMoved = False
+            self.displayFirst = True
             pygame.event.clear()
     #tick 0
     def display(self):
@@ -85,7 +86,7 @@ class Game(object):
                 self.gameWon = False
                 self.running = False
             elif event.type == pygame.KEYDOWN:
-                print("input: ", event.key)
+                #print("input: ", event.key)
                 if event.key == pygame.K_w:
                     self.player.move(0)
                     if self.gameMap[self.player.info[0]][self.player.info[1]].getIsSolid() or self.gameMap[self.player.info[0]][self.player.info[1]].gameObject.isSolid:
@@ -106,7 +107,7 @@ class Game(object):
                     return
                 self.player.heal()
                 self.playerMoved = True
-                self.displayFirst = True
+                #self.displayFirst = True
         '''Old Way of getting Input
 
         inputKey = self.inputHandler.getInput()
@@ -190,9 +191,9 @@ class Game(object):
             self.player.info[10] += gameObject.agilityUp
             self.player.info[11] += gameObject.blockUp
 
-        # handing over a callback so different LevelEnd-items can behave in different ways
+        #
         if isinstance(gameObject, LevelEnd):
-            print("Level done!")
+            #print("Level done!")
             self.levelID += 1
             if self.levelID >= self.levels:
                 self.gameWon = True

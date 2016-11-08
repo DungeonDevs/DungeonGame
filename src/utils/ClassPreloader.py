@@ -11,7 +11,7 @@ class ClassLoader():
             self.files[path] = self.defaultData
         return self.files[path]
 
-    #returnd die Datein die unter dem Pfad eingetragen ist. Sollte der Pfad noch nicht geladen sein wird er geladen. Wenn keine Datei gefunden wird wird die Standarddatei geladen
+    #returns die Datein die unter dem Pfad eingetragen ist. Sollte der Pfad noch nicht geladen sein wird er geladen. Wenn keine Datei gefunden wird wird die Standarddatei geladen
     def getFile(self, path, size):
         if(path in self.files):
             return self.files.get(path)
