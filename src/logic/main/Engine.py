@@ -59,6 +59,8 @@ class EngineInterface(object):
         if debug is True:
             self.debug = True
             self.debugEngine = DebugEngine()
+        else:
+            self.debug = False
 
     def display(self, gameMap, playerInfo, mobs):
         if self.debug:
@@ -82,6 +84,7 @@ class EngineInterface(object):
         self.engine.setMap(convertedMap)
         self.engine.setPlayerPosInfo(playerInfo[1], playerInfo[0], playerInfo[2])
         self.engine.render()
+        #prnt playerstats
 
 class InputHandler(object):
     def getInput(self):

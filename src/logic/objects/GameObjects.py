@@ -1,5 +1,6 @@
 from src.logic.main.Item import *
-from src.logic.objects.Monsters import *
+from src.logic.objects.Monsters import Hunter
+from random import randint
 
 '''
 CollectableItems
@@ -48,9 +49,9 @@ Spawners
 '''
 #spawns weak funters with great range to prevent the player form getting overpowered
 class HunterSpawner(Spawner):
-    def __init__(self, delay=5, initDelay=False,spawnPoints=[(0,0),(2,2)]):
+    def __init__(self, delay=5, initDelay=False,spawnPoints=[(1,1),(2,2)]):
         Spawner.__init__(self, delay=delay ,initDelay=False)
         self.spawnPoints = spawnPoints
     def _spawn(self, gameMap, mobs, player):
-        entry = random.randint(0,len(self.spawnPoints))
+        entry = randint(0,len(self.spawnPoints))
         mobs.append(Hunter(self.spawnPoints[entry][0],0,2,10,50))

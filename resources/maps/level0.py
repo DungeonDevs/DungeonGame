@@ -12,8 +12,8 @@ def getLevel():
 
     #[ObjectDeclarations]
     gameMap[3][5].setGameObject(Sword())
-    gameMap[3][5].setGameObject(HunterSpawner())
-    #gameMap[5][5].setGameObject(LevelEnd())
+    gameMap[3][4].setGameObject(HunterSpawner())
+    gameMap[2][4].setGameObject(LevelEnd())
     #gameMap[6][7].setGameObject(ItemAppears(positionX=2,positionY=2,item=Sword()))
     mobs = []
     # [MobDeclarations] is replaced with declarations following the style:  mobs.append(<Mobname>()).

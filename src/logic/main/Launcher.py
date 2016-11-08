@@ -1,5 +1,4 @@
 from src.logic.main.Game import Game
-#import src.logic.main.PlayerClass as playerTypes
 from src.logic.main.PlayerClass import *
 from tkinter import *
 import sys, inspect
@@ -23,9 +22,9 @@ class Launcher:
         def startGame(event):
             self.start = True
             self.window.destroy()
-        possibleHeroes=["Healer","Knight"]
+        possibleHeroes=["Healer","Knight","Adventurer","Thief","Dragon","Tank","Nerd","AngryGrandmother","AppleFanboy","SamsungFanboy","Error404"]
         self.hero = StringVar()
-        self.hero.set(possibleHeroes[0])
+        self.hero.set("Choose Your Hero")
         self.dropdown_Object = OptionMenu(self.window, self.hero,*possibleHeroes,command=startGame)
         self.dropdown_Object.pack(anchor=CENTER)
         self.window.mainloop()
@@ -48,4 +47,18 @@ class Launcher:
                 game=Game(Adventurer())
             elif hero == "Thief":
                 game=Game(Thief())
+            elif hero == "Dragon":
+                game=Game(Dragon())
+            elif hero == "Tank":
+                game=Game(Tank())
+            elif hero == "Nerd":
+                game=Game(Nerd())
+            elif hero == "AngryGrandmother":
+                game=Game(AngryGrandmother())
+            elif hero == "AppleFanboy":
+                game=Game(AppleFanboy())
+            elif hero == "SamsungFanboy":
+                game=Game(SamsungFanboy())
+            elif hero == "Error404":
+                game=Game(Error404())
 

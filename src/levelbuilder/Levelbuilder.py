@@ -40,10 +40,11 @@ class Levelbuilder(object):
     def __init__(self,ySize=20, xSize=20):
         #prepare datastructure
         self.possibleGameObjects = [i[0] for i in inspect.getmembers(GameObjectsModule, inspect.isclass)]# A list of all possible GameObjects)
-        excludes = ["GameObject","Interactable","Item","SolidItem"]
+        excludes = ["GameObject","Interactable","Item","SolidItem","Spawner","Monster","IntelligentMonster"]
         self.possibleGameObjects = [x for x in self.possibleGameObjects if x not in excludes]
         self.possibleMobs = ["None"] + [i[0] for i in inspect.getmembers(MonstersModule, inspect.isclass)] # A list of all possible Mobs
         self.possibleMobs = [x for x in self.possibleMobs if x not in excludes]
+        self.possibleGameObjects =[x for x in self.possibleGameObjects if x not in self.possibleMobs]
         self.playerposition =(0,0)
         self.GameObjects =[]
         self.Mobs = []
@@ -364,7 +365,7 @@ class Levelbuilder(object):
         #prepares items and other gameobjects
         resultObjects =  ""
         for gO in self.GameObjects:
-            resultObjects += "gameMap["+str(gO[1])+"]["+str(gO[2])+"].setGameObject("+str(gO[0])+'('+"".join(mob[3])+"))\n"
+            resultObjects += "gameMap["+str(gO[1])+"]["+str(gO[2])+"].setGameObject("+str(gO[0])+'('+"".join(gO[3])+"))\n"
             for CustomCode in gO[4]:
                 if not CustomCode.strip() == "":
                     resultObjects +="gameMap["+str(gO[1])+"]["+str(gO[2])+"].gameObject."+str(CustomCode)+"\n"
