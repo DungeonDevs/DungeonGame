@@ -12,6 +12,7 @@ def getLevel():
 
     #[ObjectDeclarations]
     gameMap[3][5].setGameObject(Sword())
+    gameMap[3][5].setGameObject(HunterSpawner())
     #gameMap[5][5].setGameObject(LevelEnd())
     #gameMap[6][7].setGameObject(ItemAppears(positionX=2,positionY=2,item=Sword()))
     mobs = []

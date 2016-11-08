@@ -17,8 +17,8 @@ class Hunter(IntelligentMonster):
         elif player.getPosition() == self.getPosition(): #if you hunted the player down do not move
             pass
         else: #use pathfinding to move towards the player
-            pathLength, path = pathfinder((self.info[0], self.info[1]), (player.info[0], player.info[1]))
-            if(pathLength >1):
+            path = pathfinder((self.info[0], self.info[1]), (player.info[0], player.info[1]))#pathLength, path = pathfinder((self.info[0], self.info[1]), (player.info[0], player.info[1]))
+            if( len(path) > 1):
                 self.info[0], self.info[1] = path[1]
 
     #checks whether the target entity is in range.

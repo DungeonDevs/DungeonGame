@@ -3,7 +3,7 @@ from src.logic.main.Entity import Player, Monster, IntelligentMonster
 import src.utils.astar as astar
 import random
 from src.logic.main.Engine import EngineInterface as Engine, InputHandler
-from src.logic.main.Item import Empty, LevelEnd, Interactable, Item
+from src.logic.main.Item import Empty, LevelEnd, Interactable, Item, Spawner
 import pygame
 #imports for testing only
 from src.logic.objects.Monsters import Hunter
@@ -51,8 +51,8 @@ class Game(object):
     def tick(self):
         self.playerMoved = False
         print("lasttick: ",(time.time() - self.lastTick)/1000)
-        self.lastTick=time.time()
-        #pygame.time.wait(10)
+        lastTick=time.time()
+        pygame.time.wait(1000)
         self.display()
         self.playerMove()
         if(self.playerMoved): #only run if the player moved
@@ -149,6 +149,12 @@ class Game(object):
 
     #tick 4
     def gameObjectAction(self):
+        #run spawnercode
+        for y in range(len(self.gameMap[0])):
+            for x in range(len(self.gameMap)):
+                if isinstance(self.gameMap[x][y].gameObject, Spawner):
+                    self.gameMap[x][y].gameObject.run(self.gameMap,self.mobs,self.player)
+
         gameObject = self.gameMap[self.player.info[0]][self.player.info[1]].gameObject
 
         if isinstance(gameObject, Empty):

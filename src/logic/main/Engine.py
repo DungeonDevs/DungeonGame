@@ -56,7 +56,7 @@ class EngineInterface(object):
         self.engine.setGround(self.ground)
         self.engine.startUp()
 
-        if debug:
+        if debug is True:
             self.debug = True
             self.debugEngine = DebugEngine()
 
@@ -71,7 +71,7 @@ class EngineInterface(object):
                     convertedMap[x][y] = self.wall
                 else:
                     if not isinstance(gameMap[x][y].gameObject,Empty):
-                        print(gameMap[x][y].gameObject.__class__.__name__)
+                        #print(gameMap[x][y].gameObject.__class__.__name__)
                         model = self.loader.getFile("resources.Items."+ gameMap[x][y].gameObject.__class__.__name__, 16)
                         model.setGroundNecessary(True)
                         convertedMap[x][y] = model # LoadedObject("resources.Items."+gameMap[x][y].gameObject.__class__.__name__, 16) #self.item
