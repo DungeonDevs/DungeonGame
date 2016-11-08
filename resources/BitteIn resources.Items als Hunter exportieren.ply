@@ -1,6 +1,6 @@
 ply
 format ascii 1.0
-comment : 
+comment :
 comment : MagicaVoxel @ ephtracy
 element vertex 17472
 property float x
