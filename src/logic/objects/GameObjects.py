@@ -49,7 +49,7 @@ Spawners
 '''
 #spawns weak funters with great range to prevent the player form getting overpowered
 class HunterSpawner(Spawner):
-    def __init__(self, delay=5, initDelay=False,spawnPoints=[(1,1),(2,2)]):
+    def __init__(self, delay=5, initDelay=False,spawnPoints=[[1,1],[2,2]]):
         Spawner.__init__(self, delay=delay ,initDelay=False)
         self.spawnPoints = spawnPoints
     def _spawn(self, gameMap, mobs, player):

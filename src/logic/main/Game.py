@@ -20,7 +20,7 @@ class Game(object):
     mapHandler = MapHandler()
 
     levelID = 0 # stores which level is played right now
-    levels = 2 #amount of levels there are
+    levels = 4 #amount of levels there are
     player = Player(1,1,1,Knight())
 
     #function to generate paths between tiles
@@ -34,7 +34,7 @@ class Game(object):
     def __init__(self, hero):
         #call the engine setup in gamesetup
         self.engine = Engine(hero,debug = False)
-        #
+        #block events to make the thing run faster
         pygame.event.set_blocked(pygame.MOUSEMOTION)
         pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
         pygame.event.set_blocked(pygame.MOUSEBUTTONUP)

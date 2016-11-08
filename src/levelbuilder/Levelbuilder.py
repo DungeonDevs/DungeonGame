@@ -365,7 +365,7 @@ class Levelbuilder(object):
         #prepares items and other gameobjects
         resultObjects =  ""
         for gO in self.GameObjects:
-            resultObjects += "gameMap["+str(gO[1])+"]["+str(gO[2])+"].setGameObject("+str(gO[0])+'('+"".join(gO[3])+"))\n"
+            resultObjects += "gameMap["+str(gO[1])+"]["+str(gO[2])+"].setGameObject("+str(gO[0])+'('+", ".join(gO[3])+"))\n"
             for CustomCode in gO[4]:
                 if not CustomCode.strip() == "":
                     resultObjects +="gameMap["+str(gO[1])+"]["+str(gO[2])+"].gameObject."+str(CustomCode)+"\n"
