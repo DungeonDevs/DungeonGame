@@ -26,31 +26,3 @@ class Adventurer(playerClass):
 class Thief(playerClass):
     def __init__(self, ID = 3, attack = 5, health = 10, healing = 1, intelligence = 25, intuition = 10, dexterity = 20, agility = 30, block = 0):
         playerClass.__init__(self, ID, attack, health, healing, intelligence, intuition, dexterity, agility, block)
-
-class Dragon(playerClass):
-    def __init__(self, ID = 4, attack = 30, health = 50, healing = 0, intelligence = 0, intuition = 0, dexterity = 0, agility = 0, block = 0):
-        playerClass.__init__(self, ID, attack, health, healing, intelligence, intuition, dexterity, agility, block)
-        
-class Tank(playerClass):
-    def __init__(self, ID = 5, attack = 5, health = 50, healing = 0, intelligence = 0, intuition = 0, dexterity = 0, agility = 0, block = 15):
-        playerClass.__init__(self, ID, attack, health, healing, intelligence, intuition, dexterity, agility, block)
-        
-class Nerd(playerClass):
-    def __init__(self, ID = 6, attack = 1, health = 10, healing = 1, intelligence = 50, intuition = 50, dexterity = 0, agility = 0, block = 0):
-        playerClass.__init__(self, ID, attack, health, healing, intelligence, intuition, dexterity, agility, block)
-        
-class AngryGrandmother(playerClass):
-    def __init__(self, ID = 7, attack = 20, health = 15, healing = 3, intelligence = 35, intuition = 0, dexterity = 0, agility = 0, block = 0):
-        playerClass.__init__(self, ID, attack, health, healing, intelligence, intuition, dexterity, agility, block)
-        
-class AppleFanboy(playerClass):
-    def __init__(self, ID = 8, attack = 1, health = 1, healing = 0, intelligence = 0, intuition = 0, dexterity = 0, agility = 0, block = 0):
-        playerClass.__init__(self, ID, attack, health, healing, intelligence, intuition, dexterity, agility, block)
-        
-class SamsungFanboy(playerClass):
-    def __init__(self, ID = 9, attack = 100, health = 100, healing = 100, intelligence = 100, intuition = 100, dexterity = 100, agility = 100, block = 100):
-        playerClass.__init__(self, ID, attack, health, healing, intelligence, intuition, dexterity, agility, block)
-        
-class Error404(playerClass):
-    def __init__(self, ID = 10, attack = 1, health = 100, healing = 5, intelligence = 0, intuition = 0, dexterity = 30, agility = 0, block = 0):
-        playerClass.__init__(self, ID, attack, health, healing, intelligence, intuition, dexterity, agility, block)
