@@ -3,7 +3,7 @@ from src.logic.main.Entity import Player, Monster, IntelligentMonster
 import src.utils.astar as astar
 import random
 from src.logic.main.Engine import EngineInterface as Engine, InputHandler
-from src.logic.main.Item import Empty, LevelEnd, Interactable, Item
+from src.logic.main.Item import Empty, LevelEnd, Interactable, Item, Spawner
 import pygame
 #imports for testing only
 from src.logic.objects.Monsters import Hunter
@@ -20,7 +20,7 @@ class Game(object):
     mapHandler = MapHandler()
 
     levelID = 0 # stores which level is played right now
-    levels = 2 #amount of levels there are
+    levels = 4 #amount of levels there are
     player = Player(1,1,1,Knight())
 
     #function to generate paths between tiles
@@ -30,40 +30,54 @@ class Game(object):
     gameWon = None
     '''
     @param: hero - the hero to use
-    @param: callback - a callback that s called when the game ends. True is handed over if the player won
     '''
-    def __init__(self, hero, callback = None):
+    def __init__(self, hero):
         #call the engine setup in gamesetup
-        self.engine = Engine(debug = True)
+        self.engine = Engine(hero,debug = False)
+        #block events to make the thing run faster
+        pygame.event.set_blocked(pygame.MOUSEMOTION)
+        pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
+        pygame.event.set_blocked(pygame.MOUSEBUTTONUP)
+        pygame.event.set_blocked(pygame.JOYAXISMOTION)
+        pygame.event.set_blocked(pygame.JOYBALLMOTION)
+        pygame.event.set_blocked(pygame.VIDEORESIZE)
+        pygame.event.set_blocked(pygame.VIDEOEXPOSE)
+        pygame.event.set_blocked(pygame.KEYUP)
         # if hero is presented the player is set to hero
         if(not (hero is None)):
             self.player = Player(1,1,1,hero)
         self.loadLevel(levelToLoad = 0) # load first level
         #main loop as long as the game is running
-        self.lastTick = time.time()
+        self.playerMoved = False
+        self.displayFirst = True
         while self.running:
             self.tick()
-        #when the game has ended
-        if(callback):
-            callback(self.gameWon)
+        if(self.gameWon):
+            print("You WON!")
+        else:
+            print("GAMEOVER!")
 
     #is run every tick of the game
     def tick(self):
-        self.playerMoved = False
-        print("lasttick: ",(time.time() - self.lastTick)/1000)
-        self.lastTick=time.time()
-        #pygame.time.wait(10)
-        self.display()
-        self.playerMove()
+        pygame.time.wait(1000)
+        if(self.displayFirst):
+            self.display()
+            self.displayFirst = False
+        else:
+            self.playerMove()
+        if(self.playerMoved and self.displayFirst):
+            return
         if(self.playerMoved): #only run if the player moved
             self.mobMove()
             self.fight()
             self.gameObjectAction()
             self.checkHealth()
+            self.playerMoved = False
+            self.displayFirst = True
+            pygame.event.clear()
     #tick 0
     def display(self):
         self.engine.display(self.gameMap, self.player.info, self.mobs)
-        print(self.player.info)
     #tick 1 - nonblocking input method
     def playerMove(self):
         for event in pygame.event.get():
@@ -72,7 +86,7 @@ class Game(object):
                 self.gameWon = False
                 self.running = False
             elif event.type == pygame.KEYDOWN:
-                print("input: ", event.key)
+                #print("input: ", event.key)
                 if event.key == pygame.K_w:
                     self.player.move(0)
                     if self.gameMap[self.player.info[0]][self.player.info[1]].getIsSolid() or self.gameMap[self.player.info[0]][self.player.info[1]].gameObject.isSolid:
@@ -93,7 +107,9 @@ class Game(object):
                     return
                 self.player.heal()
                 self.playerMoved = True
-        '''
+                #self.displayFirst = True
+        '''Old Way of getting Input
+
         inputKey = self.inputHandler.getInput()
         if inputKey == "w":
             self.player.move(0)
@@ -136,7 +152,11 @@ class Game(object):
                 #randomly no damage taken at all, depends on agility, dexterity and intuition
                 if (self.player.info[9] + self.player.info[10] + self.player.info[8]) < random.randint(0, 150):
                     #damage taken depends on players attack and block (and monsters attack and health)
-                    self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11])
+                    #self.player.info[4] -= ((self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]) / (100/self.player.info[11])
+                    damageTaken = (self.mobs[a].info[4] / self.player.info[3])*self.mobs[a].info[3]
+                    if self.player.info[11] > 0:
+                        damageTaken = (100-self.player.info[11])/100 * damageTaken
+                    self.player.info[4] -= damageTaken
                 #if player isn't dead, the mob is
                 if (not self.player.info[4] <= 0):
                     dead += [a]
@@ -149,6 +169,12 @@ class Game(object):
 
     #tick 4
     def gameObjectAction(self):
+        #run spawnercode
+        for y in range(len(self.gameMap[0])):
+            for x in range(len(self.gameMap)):
+                if isinstance(self.gameMap[x][y].gameObject, Spawner):
+                    self.gameMap[x][y].gameObject.run(self.gameMap,self.mobs,self.player)
+
         gameObject = self.gameMap[self.player.info[0]][self.player.info[1]].gameObject
 
         if isinstance(gameObject, Empty):
@@ -165,11 +191,11 @@ class Game(object):
             self.player.info[10] += gameObject.agilityUp
             self.player.info[11] += gameObject.blockUp
 
-        # handing over a callback so different LevelEnd-items can behave in different ways
+        #
         if isinstance(gameObject, LevelEnd):
-            print("Level done!")
+            #print("Level done!")
             self.levelID += 1
-            if self.levelID > self.levels:
+            if self.levelID >= self.levels:
                 self.gameWon = True
                 self.running = False
             else:
@@ -191,12 +217,6 @@ class Game(object):
         if self.player.info[4] <= 0:
                     self.gameWon = False
                     self.running = False
-        '''
-        elif(len(self.mobs) == 0):
-            print("Level done!")
-            self.levelID += 1
-            self.loadLevel(levelToLoad=self.levelID)
-        '''
 
     #loads the current level
     def loadLevel(self, levelToLoad = None):
@@ -205,9 +225,11 @@ class Game(object):
         #    return
         #if(not levelToLoad is None): # if a levelToLoad is hand over load this level
         self.levelID = levelToLoad
+        print("now playing:", self.levelID)
         #else: # else load the level with the next id
         #    self.levelID = self.levelID + 1
 
         self.gameMap, self.mobs, self.player.info[0], self.player.info[1] = MapHandler.loadMap(self.levelID)
         self.mapHandler.createBorders(self.gameMap, len(self.gameMap),len(self.gameMap[0]))
         self.pathfinding = astar.pathfinder(astar.gamemapNeighbors(self.gameMap))
+        self.displayFirst = True

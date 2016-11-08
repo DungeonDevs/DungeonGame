@@ -93,7 +93,7 @@ def pathfinder( neighbors,
             current = min( openSet, key=lambda c: fScore[c] )
 
             if current == end:
-                return gScore[ current ], reconstructPath( pastPlace, end )
+                return reconstructPath( pastPlace, end )#gScore[ current ], reconstructPath( pastPlace, end )
 
             openSet.discard( current )
             closedSet.add( current )
@@ -111,7 +111,7 @@ def pathfinder( neighbors,
                     if neighbor not in openSet:
                         openSet.add( neighbor )
 
-        return None, []
+        return [] #None, []
     return func
 '''
 A function specificly designed for the game that only sees a field as a neighbor if it is not solid.

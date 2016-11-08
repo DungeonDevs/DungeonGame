@@ -38,6 +38,20 @@ class LevelEnd(GameObject) :
     #def trigger(self, callback):
     #    print("LevelEnd triggered! Override for use!")
 
+class Spawner(GameObject):
+    def __init__(self,delay=5, initDelay=False):
+        GameObject.__init__(self, 998, 0, False)
+        self.delay = delay
+        self.timer = 0
+    def run(self, gameMap, mobs,player):
+        if(self.timer <= self.delay):
+            self.timer += 1
+            return
+        self.timer = 0
+        self._spawn(gameMap, mobs, player)
+    #override in child
+    def _spawn(self, gameMap, mobs, player):
+        pass
 '''
 MetaItems
 '''
