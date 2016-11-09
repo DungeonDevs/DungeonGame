@@ -2,10 +2,11 @@
 superclasses
 '''
 class GameObject(object):
-    def __init__(self, ID, orientation, isSolid):
+    def __init__(self, ID, orientation, isSolid,invisible=False):
         self.ID = ID
         self.orientation = orientation
         self.isSolid = isSolid
+        self.invisible=invisible
 
 #superclass contains shared variables
 #ID starts with 1

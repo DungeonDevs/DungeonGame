@@ -37,8 +37,12 @@ class EngineInterface(object):
                 else:
                     if not isinstance(gameMap[x][y].gameObject,Empty):
                         #print(gameMap[x][y].gameObject.__class__.__name__)
-                        model = self.loader.getFile("resources.Items."+ gameMap[x][y].gameObject.__class__.__name__, 16)
-                        model.setGroundNecessary(True)
+                        if(gameMap[x][y].gameObject.invisible):
+                            model = None
+                        else:
+                            model = self.loader.getFile("resources.Items."+ gameMap[x][y].gameObject.__class__.__name__, 16)
+                        if(model is not None):
+                            model.setGroundNecessary(True)
                         convertedMap[x][y] = model # LoadedObject("resources.Items."+gameMap[x][y].gameObject.__class__.__name__, 16) #self.item
         for mob in mobs:
             convertedMap[mob.info[0]][mob.info[1]] = self.loader.getFile("resources.Items."+ mob.__class__.__name__, 32)

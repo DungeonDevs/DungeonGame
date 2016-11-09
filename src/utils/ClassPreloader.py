@@ -1,6 +1,6 @@
 from engine.classes.LoadedObject import *
 class ClassLoader():
-    def __init__(self, defaultData=LoadedObject("engine.resources.block", 16)):
+    def __init__(self, defaultData=None):#LoadedObject("resources.block", 16)):
         self.files = dict()
         self.defaultData = defaultData
 

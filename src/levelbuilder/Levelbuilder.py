@@ -383,6 +383,7 @@ class Levelbuilder(object):
         updatedFile = updatedFile.split("[MobDeclarations]")[0] + resultMobs.replace("\n", "\n    ") + updatedFile.split("[MobDeclarations]")[1]
         updatedFile = updatedFile.replace("<playerPositionX>", str(self.playerposition[0]))
         updatedFile = updatedFile.replace("<playerPositionY>", str(self.playerposition[1]))
+        updatedFile = updatedFile.replace(", spawnPoints","spawnPoints")
         updatedFile = updatedFile.replace("<width>", str(len(self.gameMap[0])))
         updatedFile = updatedFile.replace("<height>", str(len(self.gameMap)))
         open(path,"w").write(updatedFile) #writes the edited file to filesystem
