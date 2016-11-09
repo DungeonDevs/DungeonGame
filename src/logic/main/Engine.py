@@ -21,6 +21,8 @@ class EngineInterface(object):
         self.engine = Engine((600, 400))
         self.engine.setGround(self.ground)
         self.engine.startUp()
+        pygame.mixer.music.load("resources/sounds/soundtrack.mp3")
+        pygame.mixer.music.play(loops=-1)
 
         if debug is True:
             self.debug = True
