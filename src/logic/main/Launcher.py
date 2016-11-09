@@ -17,7 +17,7 @@ class Launcher:
         def startGame(event):
             self.start = True
             self.window.destroy()
-        possibleHeroes=["Healer","Knight","Adventurer","Thief","Dragon","Tank","Nerd","AngryGrandmother","AppleFanboy","SamsungFanboy","Error404"]
+        possibleHeroes=["Healer","Knight","Adventurer","Thief","Dragon","Tank","Nerd","AngryGrandmother","AppleFanboy","Error404"]
         self.hero = StringVar()
         self.hero.set("Choose Your Hero")
         self.dropdown_Object = OptionMenu(self.window, self.hero,*possibleHeroes,command=startGame)
