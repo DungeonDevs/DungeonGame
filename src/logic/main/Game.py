@@ -89,11 +89,11 @@ class Game(object):
                     self.player.move(0)
                     if self.gameMap[self.player.info[0]][self.player.info[1]].getIsSolid() or self.gameMap[self.player.info[0]][self.player.info[1]].gameObject.isSolid:
                         self.player.move(1)
-                elif event.key == pygame.K_d:
+                elif event.key == pygame.K_a:
                     self.player.info[2] -= 1
                     if self.player.info[2] < 0:
                         self.player.info[2] = 3
-                elif event.key == pygame.K_a:
+                elif event.key == pygame.K_d:
                     self.player.info[2] += 1
                     if self.player.info[2] > 3:
                         self.player.info[2] = 0
