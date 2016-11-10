@@ -14,10 +14,10 @@ TODO: Add items and mobs to display
 
 class EngineInterface(object):
     def __init__(self, player, debug = False):
-        self.ground = RenderObject.createOneColorCube((150/255, 75/255, 0))
-        self.wall = RenderObject.createOneColorCube((100/255, 100/255, 0))
         self.loader = ClassLoader()
-        self.playermodel = LoadedObject("resources.heroes."+ player.__class__.__name__, 32,(.3,0,0.3))
+        self.ground = RenderObject.createOneColorCube((179/255, 89/255, 0))
+        self.wall = RenderObject.createOneColorCube((0/255, 153/255, 51/255))
+        self.playermodel = LoadedObject("resources.heroes."+ player.__class__.__name__, 32,(0.25,0,0.25))
         self.engine = Engine((600, 400))
         self.engine.setGround(self.ground)
         self.engine.startUp()
@@ -42,12 +42,12 @@ class EngineInterface(object):
                         if(gameMap[x][y].gameObject.invisible):
                             model = None
                         else:
-                            model = self.loader.getFile("resources.Items."+ gameMap[x][y].gameObject.__class__.__name__, 16)
+                            model = self.loader.getFile("resources.Items."+ gameMap[x][y].gameObject.__class__.__name__, 16,offset=(0.25,0,0.25))
                         if(model is not None):
                             model.setGroundNecessary(True)
                         convertedMap[x][y] = model # LoadedObject("resources.Items."+gameMap[x][y].gameObject.__class__.__name__, 16) #self.item
         for mob in mobs:
-            convertedMap[mob.info[0]][mob.info[1]] = self.loader.getFile("resources.Items."+ mob.__class__.__name__, 32)
+            convertedMap[mob.info[0]][mob.info[1]] = self.loader.getFile("resources.Items."+ mob.__class__.__name__, 32,offset=(0,0,0))
 
         convertedMap[playerInfo[0]][playerInfo[1]] = self.playermodel
         self.engine.setMap(convertedMap)

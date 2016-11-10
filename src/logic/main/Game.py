@@ -40,8 +40,6 @@ class Game(object):
         pygame.event.set_blocked(pygame.MOUSEBUTTONUP)
         pygame.event.set_blocked(pygame.JOYAXISMOTION)
         pygame.event.set_blocked(pygame.JOYBALLMOTION)
-        pygame.event.set_blocked(pygame.VIDEORESIZE)
-        pygame.event.set_blocked(pygame.VIDEOEXPOSE)
         pygame.event.set_blocked(pygame.KEYUP)
         # if hero is presented the player is set to hero
         if(not (hero is None)):

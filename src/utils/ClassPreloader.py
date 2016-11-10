@@ -4,19 +4,19 @@ class ClassLoader():
         self.files = dict()
         self.defaultData = defaultData
 
-    def load(self, path, size):
+    def load(self, path, size,offset = (0,0,0)):
         try:
-            self.files[path] = LoadedObject(path, size)
+            self.files[path] = LoadedObject(path, size,offset)
         except:
             self.files[path] = self.defaultData
         return self.files[path]
 
     #returns die Datein die unter dem Pfad eingetragen ist. Sollte der Pfad noch nicht geladen sein wird er geladen. Wenn keine Datei gefunden wird wird die Standarddatei geladen
-    def getFile(self, path, size):
+    def getFile(self, path, size,offset=(0,0,0)):
         if(path in self.files):
             return self.files.get(path)
         else:
-            return self.load(path, size)
+            return self.load(path, size,offset)
 
     #löscht alle geladenen Datein aus dem Ram
     def clean(self):
