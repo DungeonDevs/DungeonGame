@@ -1,0 +1,1 @@
+from resources.maps.level0 import *
